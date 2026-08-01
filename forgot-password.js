@@ -6,6 +6,19 @@ const supabase = createClient(
   "sb_publishable_Ep28HPF1SXIXQXBF2i__eg_h_jmjw4I"
 );
 
+const { data } = await supabase
+  .from("settings")
+  .select("maintenance")
+  .eq("id", 1)
+  .single();
+
+if (
+  data?.maintenance === true &&
+  !window.location.pathname.endsWith("maintenance.html")
+) {
+  window.location.href = "maintenance.html";
+}
+
 const msg = document.getElementById("msg");
 
 window.sendOTP = async function () {

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Phoenix Store - Maintenance</title>
+
+<link rel="icon" href="1.jpg">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#050816,#0b1023,#090014);
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+overflow:hidden;
+color:white;
+}
+
+.card{
+
+width:90%;
+max-width:420px;
+
+padding:35px 25px;
+
+text-align:center;
+
+background:rgba(255,255,255,.05);
+
+border:1px solid rgba(0,255,255,.25);
+
+border-radius:20px;
+
+backdrop-filter:blur(18px);
+
+box-shadow:
+0 0 20px rgba(0,255,255,.25),
+0 0 45px rgba(128,0,255,.2);
+
+}
+
+.logo{
+
+font-size:70px;
+margin-bottom:15px;
+
+animation:pulse 2s infinite;
+
+}
+
+@keyframes pulse{
+
+0%{transform:scale(1);}
+50%{transform:scale(1.08);}
+100%{transform:scale(1);}
+
+}
+
+h1{
+
+color:#00f7ff;
+
+margin-bottom:15px;
+
+font-size:30px;
+
+}
+
+p{
+
+color:#d1d5db;
+
+font-size:15px;
+
+line-height:1.7;
+
+margin-bottom:12px;
+
+}
+
+.status{
+
+margin-top:20px;
+
+padding:12px;
+
+border-radius:12px;
+
+background:rgba(255,255,255,.06);
+
+border:1px solid rgba(0,255,255,.25);
+
+color:#00ffff;
+
+font-weight:bold;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="logo">🚧</div>
+
+<h1>Maintenance Mode</h1>
+
+<p>
+Phoenix Store is currently under maintenance.
+</p>
+
+<p>
+We're improving the website to give you a better experience.
+Please try again later.
+</p>
+
+<div class="status">
+🔧 We'll be back soon...
+</div>
+
+</div>
+<script type="module">
+import { createClient } from
+"https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://tvhgxlqqeklrdlgbkosa.supabase.co",
+  "sb_publishable_Ep28HPF1SXIXQXBF2i__eg_h_jmjw4I"
+);
+
+async function checkMaintenance() {
+
+  const { data } = await supabase
+    .from("settings")
+    .select("maintenance")
+    .eq("id", 1)
+    .single();
+
+  if (data && data.maintenance === false) {
+    window.location.href = "home.html";
+  }
+}
+
+checkMaintenance();
+
+// 3 secondsக்கு ஒருமுறை check செய்யும்
+setInterval(checkMaintenance, 3000);
+
+</script>
+
+</body>
+</html>

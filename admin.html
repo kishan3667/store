@@ -238,6 +238,7 @@ to{transform:scale(1.08);}
   <button onclick="viewTopups()">✅ Success</button>
   <button onclick="viewRejected()">❌ Rejected</button>
   <button onclick="viewPending()">⏳ Pending</button>
+  <button onclick="maintenancePage()">🛠 Maintenance</button>
 </div>
 
 <!-- Main -->
@@ -701,6 +702,61 @@ orders.forEach((data) => {
   box.innerHTML = html;
 };
 
+window.maintenancePage = async function () {
+
+  const { data, error } = await supabase
+    .from("settings")
+    .select("maintenance")
+    .eq("id", 1)
+    .single();
+
+  if (error) {
+    box.innerHTML = "<h2>Failed to load maintenance settings ❌</h2>";
+    return;
+  }
+
+  box.innerHTML = `
+    <h2>🛠 Website Maintenance</h2>
+
+    <br>
+
+    <h3>Status :
+      <span style="color:${data.maintenance ? "red" : "lime"};">
+        ${data.maintenance ? "ON" : "OFF"}
+      </span>
+    </h3>
+
+    <br>
+
+    <button onclick="setMaintenance(true)">
+      🔴 Turn ON
+    </button>
+
+    <br><br>
+
+    <button onclick="setMaintenance(false)">
+      🟢 Turn OFF
+    </button>
+  `;
+
+};
+
+window.setMaintenance = async function(status){
+
+  const { error } = await supabase
+    .from("settings")
+    .update({ maintenance: status })
+    .eq("id", 1);
+
+  if(error){
+    alert("Failed");
+    return;
+  }
+
+  // புதிய data-வை மீண்டும் load பண்ணும்
+  await maintenancePage();
+
+}
 window.searchOrder = async function () {
 
   const search =

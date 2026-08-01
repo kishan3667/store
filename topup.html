@@ -7,6 +7,9 @@
   <link rel="icon" href="1.jpg">
   <link rel="stylesheet" href="topup.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="theme-st.css">
+<link rel="stylesheet" href="media-st.css">
 </head>
 
 <body>
@@ -155,28 +158,52 @@
 
 </div>
 
-<script>
+<script type="module">
 
-function goBack(){
-  window.location.href="home.html";
+import { createClient } from
+"https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+const supabase = createClient(
+  "https://tvhgxlqqeklrdlgbkosa.supabase.co",
+  "sb_publishable_Ep28HPF1SXIXQXBF2i__eg_h_jmjw4I"
+);
+
+// Maintenance Check
+const { data } = await supabase
+  .from("settings")
+  .select("maintenance")
+  .eq("id", 1)
+  .single();
+
+if (
+  data?.maintenance === true &&
+  !window.location.pathname.endsWith("maintenance.html")
+) {
+  window.location.href = "maintenance.html";
 }
 
-function selectItem(name, type){
+// Back
+window.goBack = function () {
+  window.location.href = "home.html";
+};
+
+// Select Product
+window.selectItem = function (name, type) {
   const fullItem = type + " - " + name;
   localStorage.setItem("selectedTopup", fullItem);
   window.location.href = "OrderDetails.html";
-}
+};
 
 </script>
 
 <div class="bottom-nav">
 
-  <a href="home.html" class="nav-item active">
+  <a href="home.html" class="nav-item">
     <i class="fas fa-home"></i>
     <span>Home</span>
   </a>
 
-  <a href="topup.html" class="nav-item">
+  <a href="topup.html" class="nav-item active">
     <i class="fas fa-gem"></i>
     <span>Shop</span>
   </a>
@@ -197,6 +224,6 @@ function selectItem(name, type){
   </a>
 
 </div>
-
+<script src="theme.js"></script>
 </body>
 </html>

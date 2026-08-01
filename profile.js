@@ -10,6 +10,19 @@ const supabaseKey =
 const supabase =
 createClient(supabaseUrl, supabaseKey);
 
+const { data: settings } = await supabase
+  .from("settings")
+  .select("maintenance")
+  .eq("id", 1)
+  .single();
+
+if (
+  settings?.maintenance === true &&
+  !window.location.pathname.endsWith("maintenance.html")
+) {
+  window.location.href = "maintenance.html";
+}
+
 // ================= CURRENT USER =================
 
 let currentUser = null;
@@ -25,23 +38,23 @@ if (!session) {
 
 currentUser = session.user;
 
-const { data, error } =
+const { data: profile, error } =
 await supabase
 .from("profiles")
 .select("*")
 .eq("id", currentUser.id)
 .single();
 
-if (!error && data) {
+if (!error && profile) {
   document.getElementById("username").value =
-    data.username || "";
+    profile.username || "";
 
   document.getElementById("email").value =
-    data.email || currentUser.email;
+    profile.email || currentUser.email;
 
-  if (data.avatar_url) {
+  if (profile.avatar_url) {
     document.getElementById("profilePic").src =
-      data.avatar_url;
+      profile.avatar_url;
   }
 } else {
   document.getElementById("email").value =

@@ -91,6 +91,34 @@
 
 </div>
 
+<div class="bottom-nav">
+
+  <a href="home.html" class="nav-item">
+    <i class="fas fa-home"></i>
+    <span>Home</span>
+  </a>
+
+  <a href="topup.html" class="nav-item">
+    <i class="fas fa-gem"></i>
+    <span>Shop</span>
+  </a>
+
+  <a href="payment.html" class="nav-item active">
+    <i class="fas fa-bolt"></i>
+    <span>Payment</span>
+  </a>
+
+  <a href="history.html" class="nav-item">
+    <i class="fas fa-clock-rotate-left"></i>
+    <span>History</span>
+  </a>
+
+  <a href="profile.html" class="nav-item">
+    <i class="fas fa-user"></i>
+    <span>Profile</span>
+  </a>
+
+</div>
 
 
 <script type="module">
@@ -106,6 +134,19 @@ const supabaseKey =
 
 const supabase =
 createClient(supabaseUrl, supabaseKey);
+
+const { data } = await supabase
+  .from("settings")
+  .select("maintenance")
+  .eq("id", 1)
+  .single();
+
+if (
+  data?.maintenance === true &&
+  !window.location.pathname.endsWith("maintenance.html")
+) {
+  window.location.href = "maintenance.html";
+}
 
 async function saveOrder(uid, item, receipt_url) {
 
@@ -187,19 +228,13 @@ function goBack(){
 
 // AUTO FILL TOPUP
 
-window.onload = function(){
+const item = localStorage.getItem("selectedTopup");
 
- const item =
- localStorage.getItem("selectedTopup");
+console.log("Selected Topup:", item);
 
- if(item){
-
-  document.getElementById("diamond").value =
-  item;
-
- }
-
-};
+if (item) {
+  document.getElementById("diamond").value = item;
+}
 
 
 
@@ -395,33 +430,5 @@ Payment Done.`;
 
 }
 </script>
-<div class="bottom-nav">
-
-  <a href="home.html" class="nav-item active">
-    <i class="fas fa-home"></i>
-    <span>Home</span>
-  </a>
-
-  <a href="topup.html" class="nav-item">
-    <i class="fas fa-gem"></i>
-    <span>Shop</span>
-  </a>
-
-  <a href="payment.html" class="nav-item">
-    <i class="fas fa-bolt"></i>
-    <span>Payment</span>
-  </a>
-
-  <a href="history.html" class="nav-item">
-  <i class="fas fa-clock-rotate-left"></i>
-  <span>History</span>
-</a>
-
-  <a href="profile.html" class="nav-item">
-    <i class="fas fa-user"></i>
-    <span>Profile</span>
-  </a>
-
-</div>
 </body>
 </html>

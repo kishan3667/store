@@ -9,6 +9,9 @@
   <link rel="stylesheet" href="payment.css">
   <link rel="icon" href="1.jpg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="theme-st.css">
+<link rel="stylesheet" href="media-st.css">
 
 </head>
 
@@ -97,31 +100,55 @@
 
 </div>
 
-<script>
-function copyPayment(button) {
+<script type="module">
 
-    const box = button.closest('.payment-box');
-    const content = box.querySelector('.copy-content');
+import { createClient } from
+"https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-    const text = content.innerText;
+const supabase = createClient(
+  "https://tvhgxlqqeklrdlgbkosa.supabase.co",
+  "sb_publishable_Ep28HPF1SXIXQXBF2i__eg_h_jmjw4I"
+);
 
-    navigator.clipboard.writeText(text).then(() => {
+// Maintenance Check
+const { data } = await supabase
+  .from("settings")
+  .select("maintenance")
+  .eq("id", 1)
+  .single();
 
-        const oldText = button.innerText;
-
-        button.innerText = "✅";
-
-        setTimeout(() => {
-            button.innerText = oldText;
-        }, 1500);
-
-    });
+if (
+  data?.maintenance === true &&
+  !window.location.pathname.endsWith("maintenance.html")
+) {
+  window.location.href = "maintenance.html";
 }
+
+// Copy Payment
+window.copyPayment = function(button) {
+
+  const box = button.closest(".payment-box");
+  const content = box.querySelector(".copy-content");
+
+  navigator.clipboard.writeText(content.innerText).then(() => {
+
+    const old = button.innerText;
+
+    button.innerText = "✅";
+
+    setTimeout(() => {
+      button.innerText = old;
+    }, 1500);
+
+  });
+
+};
+
 </script>
 
 <div class="bottom-nav">
 
-  <a href="home.html" class="nav-item active">
+  <a href="home.html" class="nav-item">
     <i class="fas fa-home"></i>
     <span>Home</span>
   </a>
@@ -131,7 +158,7 @@ function copyPayment(button) {
     <span>Shop</span>
   </a>
 
-  <a href="payment.html" class="nav-item">
+  <a href="payment.html" class="nav-item active">
     <i class="fas fa-bolt"></i>
     <span>Payment</span>
   </a>
@@ -147,7 +174,7 @@ function copyPayment(button) {
   </a>
 
 </div>
-
+<script src="theme.js"></script>
 </body>
 
 </html>

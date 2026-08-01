@@ -5,94 +5,108 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Profile</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="theme-st.css">
+<link rel="stylesheet" href="media-st.css">
 
 <style>
-
-  html, body, * {
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
+html,body,*{
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
 }
 
-
 body{
-  font-family: Arial;
-  background: #52717e;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  font-family:Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
 
 .profile-container{
-  background: #000000;
-  padding: 20px;
-  border-radius: 12px;
-  width: 300px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  background:var(--card);
+  padding:20px;
+  border-radius:12px;
+  width:300px;
+  text-align:center;
+  border:1px solid var(--border);
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
 }
 
 .profile-img-box img{
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  object-fit:cover;
+  border:3px solid var(--primary);
 }
 
 button{
-  margin-top: 10px;
-  padding: 8px 15px;
-  border: none;
-  background: #569ca1;
-  color: #fff;
-  border-radius: 6px;
-  cursor: pointer;
+  margin-top:10px;
+  padding:8px 15px;
+  border:none;
+  background:var(--primary);
+  color:#fff;
+  border-radius:6px;
+  cursor:pointer;
+  transition:.3s;
+}
+
+button:hover{
+  opacity:.9;
 }
 
 input{
-  width: 90%;
-  margin: 8px 0;
-  padding: 8px;
+  width:90%;
+  margin:8px 0;
+  padding:8px;
+  background:var(--bg);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:6px;
+  outline:none;
 }
 
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 70px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
-  border-top: 1px solid rgba(255,255,255,0.2);
-
-  box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
-  z-index: 1000;
-}
-.nav-item {
-  text-align: center;
-  text-decoration: none;
-  color: #aaa;
-  font-size: 12px;
-  transition: 0.3s;
+input::placeholder{
+  color:var(--text2);
 }
 
-.nav-item i {
-  display: block;
-  font-size: 22px;
-  margin-bottom: 4px;
+.bottom-nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  width:100%;
+  height:70px;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  background:var(--card);
+  border-top:1px solid var(--border);
+  backdrop-filter:blur(15px);
+  box-shadow:0 -5px 20px rgba(0,0,0,.2);
+  z-index:1000;
 }
 
-.nav-item:hover {
-  color: #00eaff;
+.nav-item{
+  text-align:center;
+  text-decoration:none;
+  color:var(--text2);
+  font-size:12px;
+  transition:.3s;
 }
 
-.nav-item.active {
-  color: #00eaff;
+.nav-item i{
+  display:block;
+  font-size:22px;
+  margin-bottom:4px;
+}
+
+.nav-item:hover,
+.nav-item.active{
+  color:var(--primary);
 }
 
 #toast{
@@ -100,15 +114,15 @@ input{
   top:25px;
   left:50%;
   transform:translateX(-50%);
-  background:rgba(0,0,0,0.85);
-  color:white;
+  background:var(--card);
+  color:var(--text);
   padding:14px 25px;
   border-radius:12px;
-  font-size:14px;
-  box-shadow:0 0 20px #00ffff;
+  border:1px solid var(--primary);
+  box-shadow:0 0 20px rgba(56,189,248,.25);
   opacity:0;
   pointer-events:none;
-  transition:0.3s;
+  transition:.3s;
   z-index:9999;
 }
 
@@ -262,7 +276,7 @@ textarea:focus{
 
 <div class="bottom-nav">
 
-  <a href="home.html" class="nav-item active">
+  <a href="home.html" class="nav-item">
     <i class="fas fa-home"></i>
     <span>Home</span>
   </a>
@@ -272,7 +286,7 @@ textarea:focus{
     <span>Shop</span>
   </a>
 
-  <a href="payment.html" class="nav-item">
+  <a href="payment.html" class="nav-item active">
     <i class="fas fa-bolt"></i>
     <span>Payment</span>
   </a>
@@ -290,7 +304,7 @@ textarea:focus{
 </div>
 
 <div id="toast"></div>
-
+<script src="theme.js"></script>
 </body>
 
 </html>

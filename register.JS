@@ -10,6 +10,19 @@ const supabaseKey =
 const supabase =
 createClient(supabaseUrl,supabaseKey);
 
+const { data } = await supabase
+  .from("settings")
+  .select("maintenance")
+  .eq("id", 1)
+  .single();
+
+if (
+  data?.maintenance === true &&
+  !window.location.pathname.endsWith("maintenance.html")
+) {
+  window.location.href = "maintenance.html";
+}
+
 const form =
 document.getElementById("registerForm");
 

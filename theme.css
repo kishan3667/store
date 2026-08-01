@@ -1,0 +1,79 @@
+/* ===========================
+   PHOENIX THEME (DEFAULT)
+=========================== */
+
+:root{
+
+--bg:#0f172a;
+--card:#1e293b;
+--header:#020617;
+
+--text:#ffffff;
+--text2:#cbd5e1;
+
+--primary:#38bdf8;
+--border:#38bdf8;
+
+--success:#00ff66;
+--warning:#ffb300;
+--danger:#ff4444;
+
+--shadow:0 0 15px rgba(56,189,248,.25);
+
+}
+
+
+/* ===========================
+   DARK THEME
+=========================== */
+
+[data-theme="dark"]{
+
+--bg:#000000;
+--card:#111111;
+--header:#050505;
+
+--text:#ffffff;
+--text2:#bbbbbb;
+
+--primary:#3b82f6;
+--border:#38bdf8;
+
+
+--success:#22c55e;
+--warning:#facc15;
+--danger:#ef4444;
+
+--shadow:
+0 0 10px rgba(56,189,248,.45),
+0 0 20px rgba(56,189,248,.20);
+
+}
+
+
+/* ===========================
+   LIGHT THEME
+=========================== */
+
+[data-theme="light"]{
+
+--bg:#e5e7eb;        /* Light Grey */
+--card:#ffffff;      /* White Cards */
+--header:#e5e7eb;    /* Header also Grey */
+
+--text:#111827;
+--text2:#6b7280;
+
+--primary:#0ea5e9;
+--border:#38bdf8;
+
+--success:#22c55e;
+--warning:#f59e0b;
+--danger:#ef4444;
+
+/* Very soft shadow */
+--shadow:
+0 0 10px rgba(56,189,248,.45),
+0 0 20px rgba(56,189,248,.20);
+
+}

@@ -2,4 +2,4 @@
   directory = "netlify/functions"
 
 [build.environment]
-  SECRETS_SCAN_OMIT_PATHS = "register.JS,index.html,profile.js,OrderDetails.html,history.html,admin.html,adminlogin.html,OrderDetails.html,home.html,forgot-password.js"
+  SECRETS_SCAN_OMIT_PATHS = "register.JS,index.html,profile.js,OrderDetails.html,history.html,admin.html,adminlogin.html,OrderDetails.html,home.html,forgot-password.js,maintenance.html,payment.html,topup.html"

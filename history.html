@@ -25,12 +25,45 @@ body{
 
 .header{
   background:var(--header);
-  padding:18px;
-  text-align:center;
+  padding:15px 18px;
+  border-bottom:1px solid var(--border);
+
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+
+  color:var(--text);
   font-size:20px;
   font-weight:bold;
-  color:var(--text);
-  border-bottom:1px solid var(--border);
+}
+
+.wallet-pill{
+  display:flex;
+  align-items:center;
+  gap:5px;
+
+  padding:8px 16px;
+
+  background:var(--card);
+  border:1px solid var(--primary);
+  border-radius:999px;
+
+  color:var(--primary);
+  font-size:14px;
+  font-weight:bold;
+
+  box-shadow:var(--shadow);
+
+  cursor:pointer;
+  transition:.2s;
+}
+
+.wallet-pill:hover{
+  transform:scale(1.03);
+}
+
+.wallet-pill:active{
+  transform:scale(.97);
 }
 
 .container{
@@ -106,6 +139,28 @@ body{
   color:var(--primary);
 }
 
+.tabs{
+display:flex;
+justify-content:space-evenly;
+align-items:center;
+margin:18px 0;
+}
+
+.tab-btn{
+background:none;
+border:none;
+color:var(--text);
+font-size:18px;
+font-weight:bold;
+padding:10px 5px;
+cursor:pointer;
+}
+
+.tab-btn.active{
+color:var(--primary);
+border-bottom:3px solid var(--primary);
+}
+
 /* Mobile */
 @media (max-width:600px){
 
@@ -130,17 +185,133 @@ body{
 
 }
 
+.history-wrapper{
+width:95%;
+max-width:420px;
+margin:0 auto;
+display:flex;
+flex-direction:column;
+height:calc(100vh - 170px);
+}
+
+.tabs{
+display:flex;
+background:var(--card);
+border-radius:12px;
+overflow:hidden;
+border:1px solid var(--border);
+margin-bottom:12px;
+flex-shrink:0;
+margin:8px 0 12px 0;
+}
+
+.tab-btn{
+flex:1;
+padding:14px;
+border:none;
+background:none;
+color:var(--text);
+font-size:15px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+
+.tab-btn.active{
+background:var(--primary);
+color:#fff;
+}
+
+.history-content{
+flex:1;
+overflow-y:auto;
+padding-bottom:80px;
+}
+
+.history-page{
+display:none;
+}
+
+.history-page.active{
+display:block;
+}
+
+.card{
+background:var(--card);
+border-radius:12px;
+padding:14px;
+margin-bottom:12px;
+border:1px solid var(--primary);
+box-shadow:var(--shadow);
+}
+
+.card p{
+margin:8px 0;
+font-size:14px;
+word-break:break-word;
+}
+
+@media(max-width:600px){
+
+.history-wrapper{
+width:94%;
+height:calc(100vh - 160px);
+}
+
+.tab-btn{
+font-size:13px;
+padding:12px;
+}
+
+.card p{
+font-size:13px;
+}
+
+}
+
 </style>
 </head>
 
 <body>
 
 <div class="header">
-🕒 Topup History
+
+  <span>🕒 History</span>
+
+  <div class="wallet-pill" onclick="location.href='wallet-topup.html'">
+
+    💰 Rs.
+    <span id="liveBalance">0.00</span>
+
+  </div>
+
 </div>
 
-<div class="container" id="historyBox">
-Loading...
+
+<div class="history-wrapper">
+
+  <div class="tabs">
+    <button class="tab-btn active" id="topupTab">
+      TOP UP HISTORY
+    </button>
+
+    <button class="tab-btn" id="walletTab">
+      WALLET HISTORY
+    </button>
+  </div>
+
+  <div class="history-content">
+
+    <div class="history-page active" id="topupHistory">
+      Loading...
+    </div>
+
+    <div class="history-page" id="walletHistory">
+      Loading...
+    </div>
+
+  </div>
+
 </div>
 
 <script type="module">
@@ -170,8 +341,11 @@ if (
   window.location.href = "maintenance.html";
 }
 
-const box =
-document.getElementById("historyBox");
+const topupBox =
+document.getElementById("topupHistory");
+
+const walletBox =
+document.getElementById("walletHistory");
 
 const {
   data: { session }
@@ -179,6 +353,18 @@ const {
 
 if (!session) {
   window.location.href = "index.html";
+}
+
+// Live Wallet Balance
+const { data: profile, error: profileError } = await supabase
+  .from("profiles")
+  .select("wallet_balance")
+  .eq("id", session.user.id)
+  .single();
+
+if (!profileError) {
+  document.getElementById("liveBalance").textContent =
+    Number(profile.wallet_balance || 0).toFixed(2);
 }
 
 const { data: orders, error } =
@@ -209,7 +395,11 @@ if (!error) {
 
 <p>🎮 UID : ${data.uid}</p>
 
-<p>💎 Topup : ${data.topup}</p>
+<p>💎 Product : ${data.product_name}</p>
+
+<p>📂 Category : ${data.category}</p>
+
+<p>💵 Price : Rs. ${Number(data.price).toFixed(2)}</p>
 
 <p>
 📌 Status :
@@ -242,36 +432,145 @@ style="font-size:40px;color:#38bdf8;"></i>
 
 }
 
-box.innerHTML = html;
+topupBox.innerHTML = html;
+
+// Wallet History
+
+const { data: wallets, error: walletError } =
+await supabase
+.from("wallet_topups")
+.select("*")
+.eq("user_id", session.user.id)
+.order("created_at", { ascending: false });
+
+let walletHtml = "";
+
+if (!walletError) {
+
+  wallets.forEach((data) => {
+
+    let colorClass = "pending";
+
+    if (data.status === "success") {
+      colorClass = "success";
+    } else if (data.status === "reject") {
+      colorClass = "reject";
+    }
+
+    walletHtml += `
+<div class="card">
+
+<p>💰 Amount : Rs. ${data.amount}</p>
+
+<p>📱 WhatsApp : ${data.whatsapp}</p>
+
+<p>📧 Email : ${data.email}</p>
+
+<p>
+📌 Status :
+<span class="${colorClass}">
+${data.status}
+</span>
+</p>
+
+${
+data.receipt_url
+? `<p>
+🧾 <a href="${data.receipt_url}" target="_blank"
+style="color:#38bdf8;text-decoration:none;">
+View Receipt
+</a>
+</p>`
+: ""
+}
+
+</div>
+`;
+
+  });
+
+}
+
+if (walletHtml === "") {
+
+  walletHtml = `
+<div class="card" style="text-align:center;">
+
+<i class="fas fa-wallet"
+style="font-size:40px;color:#38bdf8;"></i>
+
+<h3>No Wallet History Found</h3>
+
+<p>Your wallet history will appear here</p>
+
+</div>
+`;
+
+}
+
+walletBox.innerHTML = walletHtml;
+
+
+// Tab Switch
+
+const topupTab =
+document.getElementById("topupTab");
+
+const walletTab =
+document.getElementById("walletTab");
+
+topupTab.onclick = () => {
+
+topupHistory.style.display = "block";
+
+walletHistory.style.display = "none";
+
+topupTab.classList.add("active");
+
+walletTab.classList.remove("active");
+
+};
+
+walletTab.onclick = () => {
+
+topupHistory.style.display = "none";
+
+walletHistory.style.display = "block";
+
+walletTab.classList.add("active");
+
+topupTab.classList.remove("active");
+
+};
 
 </script>
 
 <div class="bottom-nav">
 
 <a href="home.html" class="nav-item">
-    <i class="fas fa-home"></i>
-    <span>Home</span>
-  </a>
-
-  <a href="topup.html" class="nav-item">
-    <i class="fas fa-gem"></i>
-    <span>Shop</span>
-  </a>
-
-  <a href="payment.html" class="nav-item active">
-    <i class="fas fa-bolt"></i>
-    <span>Payment</span>
-  </a>
-
-  <a href="history.html" class="nav-item">
-  <i class="fas fa-clock-rotate-left"></i>
-  <span>History</span>
+<i class="fas fa-home"></i>
+<span>Home</span>
 </a>
 
-  <a href="profile.html" class="nav-item">
-    <i class="fas fa-user"></i>
-    <span>Profile</span>
-  </a>
+<a href="topup.html" class="nav-item">
+<i class="fas fa-gem"></i>
+<span>Shop</span>
+</a>
+
+<a href="wallet-topup.html" class="nav-item active">
+<i class="fas fa-wallet"></i>
+<span>Wallet</span>
+</a>
+
+<a href="history.html" class="nav-item">
+<i class="fas fa-clock-rotate-left"></i>
+<span>History</span>
+</a>
+
+<a href="profile.html" class="nav-item">
+<i class="fas fa-user"></i>
+<span>Profile</span>
+</a>
 
 </div>
 <script src="theme.js"></script>

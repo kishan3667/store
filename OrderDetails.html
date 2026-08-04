@@ -8,427 +8,147 @@
   <title>Order Details</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="OrderDetails.css">
+  <link rel="stylesheet" href="theme.css">
+<link rel="stylesheet" href="theme-st.css">
+<link rel="stylesheet" href="media-st.css">
+<link rel="stylesheet" href="OrderDetails.css">
   <link rel="icon" href="1.jpg">
 
 </head>
 
 <body>
 
-<div class="container">
+<div class="header">
 
-
-  <!-- ORDER CARD -->
-
-  <div class="card">
-
-    <div class="title">
-      🎮 Order Details
+    <div class="logo-title">
+        🛒 Order Details
     </div>
 
+    <div class="header-right">
 
-    <!-- UID -->
+        <div class="wallet-pill"
+             onclick="location.href='wallet-topup.html'">
 
-    <input
-    type="text"
-    id="uid"
-    placeholder="Enter Game UID">
+            💰
+            <span id="walletBalance">
+                Rs. 0.00
+            </span>
 
-
-    <!-- TOPUP -->
-
-    <input
-    type="text"
-    id="diamond"
-    readonly>
-
-
-    <!-- RECEIPT -->
-
-    <div class="upload-box">
-
-      <h2>Upload Receipt</h2>
-
-      <label
-      for="photo"
-      class="custom-file">
-
-        Choose Receipt
-
-      </label>
-
-      <input
-      type="file"
-      id="photo"
-      accept="image/*">
-
-      <p id="fileText"></p>
-
-      <img id="previewImage" src="" alt="Receipt Preview">
-
-      <!-- SUBMIT BUTTON -->
-
-      <button onclick="submitOrder()">
-
-        Submit Top Up
-
-      </button>
-
-      <p id="msg"></p>
+        </div>
 
     </div>
-
-
-    <!-- INFO -->
-
-    <div class="preview">
-
-      📌 Complete payment and upload receipt to confirm your order.
-
-    </div>
-
-  </div>
 
 </div>
+
+
+<div class="order-container">
+
+    <div class="order-card">
+
+        <div class="product-image">
+
+            <img
+            id="productImage"
+            src="1.jpg"
+            alt="Product">
+
+        </div>
+
+
+        <h2 id="productName">
+
+            Loading...
+
+        </h2>
+
+        <h3 id="productPrice">
+
+            Rs.0.00
+
+        </h3>
+
+
+        <div class="input-group">
+
+            <label>
+
+                🎮 Game UID
+
+            </label>
+
+            <input
+            type="text"
+            id="uid"
+            placeholder="Enter your Game UID">
+
+        </div>
+
+
+        <div class="wallet-box">
+
+            <span>
+
+                Wallet Balance
+
+            </span>
+
+            <strong id="walletBalanceCard">
+
+                Rs.0.00
+
+            </strong>
+
+        </div>
+
+
+        <button
+        id="submitBtn">
+
+            🚀 Submit Top Up
+
+        </button>
+
+
+        <p
+        id="msg">
+
+        </p>
+
+    </div>
+
+</div>
+
 
 <div class="bottom-nav">
 
-  <a href="home.html" class="nav-item">
-    <i class="fas fa-home"></i>
-    <span>Home</span>
-  </a>
+<a href="home.html" class="nav-item">
+<i class="fas fa-home"></i>
+<span>Home</span>
+</a>
 
-  <a href="topup.html" class="nav-item">
-    <i class="fas fa-gem"></i>
-    <span>Shop</span>
-  </a>
+<a href="topup.html" class="nav-item active">
+<i class="fas fa-gem"></i>
+<span>Shop</span>
+</a>
 
-  <a href="payment.html" class="nav-item active">
-    <i class="fas fa-bolt"></i>
-    <span>Payment</span>
-  </a>
+<a href="wallet-topup.html" class="nav-item">
+<i class="fas fa-wallet"></i>
+<span>Wallet</span>
+</a>
 
-  <a href="history.html" class="nav-item">
-    <i class="fas fa-clock-rotate-left"></i>
-    <span>History</span>
-  </a>
+<a href="history.html" class="nav-item">
+<i class="fas fa-clock-rotate-left"></i>
+<span>History</span>
+</a>
 
-  <a href="profile.html" class="nav-item">
-    <i class="fas fa-user"></i>
-    <span>Profile</span>
-  </a>
+<a href="profile.html" class="nav-item">
+<i class="fas fa-user"></i>
+<span>Profile</span>
+</a>
 
 </div>
 
-
-<script type="module">
-
-import { createClient } from
-"https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-const supabaseUrl =
-"https://tvhgxlqqeklrdlgbkosa.supabase.co";
-
-const supabaseKey =
-"sb_publishable_Ep28HPF1SXIXQXBF2i__eg_h_jmjw4I";
-
-const supabase =
-createClient(supabaseUrl, supabaseKey);
-
-const { data } = await supabase
-  .from("settings")
-  .select("maintenance")
-  .eq("id", 1)
-  .single();
-
-if (
-  data?.maintenance === true &&
-  !window.location.pathname.endsWith("maintenance.html")
-) {
-  window.location.href = "maintenance.html";
-}
-
-async function saveOrder(uid, item, receipt_url) {
-
-  const {
-    data: { session }
-  } = await supabase.auth.getSession();
-
-  if (!session) {
-    alert("Please login first");
-    return;
-  }
-
-const { error } = await supabase
-  .from("orders")
-  .insert({
-    user_id: session.user.id,
-    uid: uid,
-    topup: item,
-    status: "pending",
-    receipt_url: receipt_url,
-    created_at: new Date().toISOString()
-  });
-
-  if (error) {
-    alert(error.message);
-  }
-
-}
-
-
-// FILE SELECT TEXT
-
-const photo =
-document.getElementById("photo");
-
-const fileText =
-document.getElementById("fileText");
-
-const previewImage =
-document.getElementById("previewImage");
-
-photo.addEventListener("change", ()=>{
-
- const file = photo.files[0];
-
- if(file){
-
-   fileText.innerText = "Receipt Selected ✅";
-
-   const reader = new FileReader();
-
-   reader.onload = function(e){
-
-      previewImage.src = e.target.result;
-      previewImage.style.display = "block";
-
-   };
-
-   reader.readAsDataURL(file);
-
- }
-
-});
-
-
-
-
-// BACK BUTTON
-
-function goBack(){
-
- window.location.href =
- "home.html";
-
-}
-
-
-
-
-// AUTO FILL TOPUP
-
-const item = localStorage.getItem("selectedTopup");
-
-console.log("Selected Topup:", item);
-
-if (item) {
-  document.getElementById("diamond").value = item;
-}
-
-
-
-
-// MAIN SUBMIT FUNCTION
-
-window.submitOrder = async function(){
-
-
- // INPUTS
-
- const uidInput =
- document.getElementById("uid");
-
- const uid =
- uidInput.value;
-
- const item =
- document.getElementById("diamond").value;
-
- const file =
- document.getElementById("photo").files[0];
-
- const msg =
- document.getElementById("msg");
-
-
-
- // RESET
-
- uidInput.classList.remove("error");
-
- uidInput.classList.remove("success");
-
-
-
- // UID CHECK
-
- if(uid === ""){
-
-  uidInput.classList.add("error");
-
-  uidInput.placeholder =
-  "⚠ Enter UID";
-
-  return;
-
- }else{
-
-  uidInput.classList.add("success");
-
- }
-
-
-
- // RECEIPT CHECK
-
- if(!file){
-
-  msg.innerText =
-  "Select Receipt ⚠";
-
-  msg.style.opacity = "1";
-
-  setTimeout(()=>{
-
-   msg.style.opacity = "0";
-
-  },1000);
-
-  return;
-
- }
-
-
-
- // LOADING MESSAGE
-
- msg.innerText =
- "Sending Receipt...";
-
- msg.style.opacity =
- "1";
-
-
-
- try{
-
-  // UPLOAD RECEIPT TO SUPABASE STORAGE
-
-const fileName =
-Date.now() + "_" + file.name;
-
-
-const { error: uploadError } =
-await supabase.storage
-.from("uploads")
-.upload(fileName, file);
-
-
-if(uploadError){
-
- msg.innerText =
- "Upload Failed ⚠";
-
- return;
-
-}
-
-
-// GET RECEIPT URL
-
-const { data: urlData } =
-supabase.storage
-.from("uploads")
-.getPublicUrl(fileName);
-
-
-const receipt_url =
-urlData.publicUrl;
-
-console.log(receipt_url);
-
-// SEND TO DISCORD WEBHOOK
-
-const discordMessage = new FormData();
-
-discordMessage.append(
-  "content",
-`🎮 New Order
-
-UID: ${uid}
-
-Top Up: ${item}
-
-Receipt:
-${receipt_url}`
-);
-
-
-await fetch(
-  "https://discord.com/api/webhooks/1531970544776511540/j0ufnoAuGXDCgyHkwnE_MbgYZZcO-CtYwn4tgY2Ec4nTn-qw0cbkgGYgNVNHvjN9PPjy",
-  {
-    method:"POST",
-    body: discordMessage
-  }
-);
-
-await saveOrder(uid,item,receipt_url);
-
-   // WHATSAPP MESSAGE
-
-   const number =
-   "94755377823";
-
-
-   const message =
-
-`Hi Bro,
-UID: ${uid}
-Selected: ${item}
-Payment Done.`;
-
-
-   const url =
-
-   "https://wa.me/" +
-   number +
-   "?text=" +
-   encodeURIComponent(message);
-
-
-
-
-   // OPEN WHATSAPP AFTER SUCCESS
-
-   setTimeout(()=>{
-
- window.location.href =
- url;
-
-},1000);
-
- }catch(error){
-  msg.innerText =
-  "Network Error ⚠";
- }
-
- setTimeout(()=>{
-  msg.style.opacity =
-  "0";
- },3000);
-
-}
-</script>
+<script src="theme.js"></script>
+<script type="module" src="OrderDetails.js"></script>
 </body>
 </html>

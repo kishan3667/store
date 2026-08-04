@@ -14,11 +14,27 @@
 <body>
 
 <div class="header">
- <i id="themeBtn" class="fas fa-palette theme-icon"></i>
 
-  Ꭾիѻєɳıẋ ƬƠƤ ƲƤ
- 
+  <div class="logo-title">
+    Ꭾիѻєɳıẋ ƬƠƤ ƲƤ
+  </div>
 
+  <div class="header-right">
+
+    <i id="themeBtn"
+       class="fas fa-palette theme-icon"></i>
+
+    <div class="wallet-pill"
+         onclick="location.href='wallet-topup.html'">
+
+      💰
+      <span id="liveBalance">
+        Rs. 0.00
+      </span>
+
+    </div>
+
+  </div>
 
 </div>
 
@@ -69,6 +85,21 @@ if (
 const { data:{ session } } =
 await supabase.auth.getSession();
 
+// Live Wallet Balance
+
+if(session){
+
+const { data: profile } = await supabase
+.from("profiles")
+.select("wallet_balance")
+.eq("id", session.user.id)
+.single();
+
+document.getElementById("liveBalance").textContent =
+Number(profile?.wallet_balance || 0).toFixed(2);
+
+}
+
 if(session){
 
 const { data } = await supabase
@@ -94,30 +125,30 @@ window.goProfile = () => window.location.href = "profile.html";
 </script>
 <div class="bottom-nav">
 
-  <a href="home.html" class="nav-item active">
-    <i class="fas fa-home"></i>
-    <span>Home</span>
-  </a>
-
-  <a href="topup.html" class="nav-item">
-    <i class="fas fa-gem"></i>
-    <span>Shop</span>
-  </a>
-
-  <a href="payment.html" class="nav-item">
-    <i class="fas fa-bolt"></i>
-    <span>Payment</span>
-  </a>
-
-  <a href="history.html" class="nav-item">
-  <i class="fas fa-clock-rotate-left"></i>
-  <span>History</span>
+<a href="home.html" class="nav-item">
+<i class="fas fa-home"></i>
+<span>Home</span>
 </a>
 
-  <a href="profile.html" class="nav-item">
-    <i class="fas fa-user"></i>
-    <span>Profile</span>
-  </a>
+<a href="topup.html" class="nav-item">
+<i class="fas fa-gem"></i>
+<span>Shop</span>
+</a>
+
+<a href="wallet-topup.html" class="nav-item active">
+<i class="fas fa-wallet"></i>
+<span>Wallet</span>
+</a>
+
+<a href="history.html" class="nav-item">
+<i class="fas fa-clock-rotate-left"></i>
+<span>History</span>
+</a>
+
+<a href="profile.html" class="nav-item">
+<i class="fas fa-user"></i>
+<span>Profile</span>
+</a>
 
 </div>
 

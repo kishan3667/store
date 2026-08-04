@@ -143,3 +143,19 @@ h2,h3{
     grid-template-columns:1fr;
   }
 }
+
+.topup-content{
+height:calc(100vh - 150px);
+overflow-y:auto;
+padding-bottom:90px;
+}
+
+.header{
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+.topup-content h3:first-child{
+margin-top:15px;
+}

@@ -6,22 +6,32 @@ color:var(--text);
 }
 
 .header{
-padding:20px;
-font-size:22px;
-font-weight:bold;
-text-align:center;
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:18px 15px;
+
 background:var(--header);
 border-bottom:1px solid var(--border);
+
 color:var(--text);
-text-shadow:none;
-letter-spacing:2px;
-position:relative;
+}
+
+.logo-title{
+font-size:22px;
+font-weight:bold;
+letter-spacing:1px;
+white-space:nowrap;
+}
+
+.header-right{
+display:flex;
+align-items:center;
+gap:10px;
 }
 
 .profile-icon{
-position:absolute;
-right:20px;
-top:15px;
 width:45px;
 height:45px;
 border-radius:50%;
@@ -31,10 +41,7 @@ cursor:pointer;
 }
 
 .theme-icon{
-position:absolute;
-left:20px;
-top:23px;
-font-size:22px;
+font-size:20px;
 color:var(--primary);
 cursor:pointer;
 transition:.3s;
@@ -137,4 +144,36 @@ border-bottom:1px solid var(--border);
 
 .theme-menu div:hover{
 background:var(--header);
+}
+
+.wallet-pill{
+display:flex;
+align-items:center;
+gap:6px;
+
+padding:8px 14px;
+
+border:2px solid var(--primary);
+border-radius:999px;
+
+background:var(--card);
+
+color:var(--primary);
+
+font-size:14px;
+font-weight:bold;
+
+cursor:pointer;
+
+box-shadow:var(--shadow);
+
+transition:.2s;
+}
+
+.wallet-pill:hover{
+transform:scale(1.03);
+}
+
+.wallet-pill:active{
+transform:scale(.97);
 }

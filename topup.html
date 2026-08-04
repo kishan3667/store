@@ -16,7 +16,29 @@
 
 <div class="neon-bg"></div>
 
-<h2>🔥 Top Up List</h2>
+<div class="header">
+
+    <div class="logo-title">
+        🔥 Top Up List
+    </div>
+
+    <div class="header-right">
+
+        <div class="wallet-pill"
+             onclick="location.href='wallet-topup.html'">
+
+            💰
+            <span id="walletBalance">
+                Rs. 0.00
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="topup-content">
 
 <h3>🔥 Membership</h3>
 
@@ -182,48 +204,101 @@ if (
   window.location.href = "maintenance.html";
 }
 
+// Wallet Live Balance
+
+const {
+  data: { session }
+} = await supabase.auth.getSession();
+
+if (session) {
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("wallet_balance")
+    .eq("id", session.user.id)
+    .single();
+
+  document.getElementById("walletBalance").textContent =
+    "Rs. " + Number(profile?.wallet_balance || 0).toFixed(2);
+
+}
+
 // Back
 window.goBack = function () {
   window.location.href = "home.html";
 };
 
 // Select Product
-window.selectItem = function (name, type) {
-  const fullItem = type + " - " + name;
-  localStorage.setItem("selectedTopup", fullItem);
-  window.location.href = "OrderDetails.html";
+window.selectItem = function (title, category) {
+
+    const image =
+        event.currentTarget.querySelector("img").getAttribute("src");
+
+    const name =
+        event.currentTarget.querySelector("h4").innerText;
+
+    const priceText =
+        event.currentTarget.querySelector("p").innerText;
+
+    const price =
+        Number(priceText.replace(/[^\d]/g, ""));
+
+    const product = {
+
+        category: category,
+
+        title: name,
+
+        fullTitle: title,
+
+        image: image,
+
+        price: price
+
+    };
+
+    localStorage.setItem(
+        "selectedProduct",
+        JSON.stringify(product)
+    );
+
+    location.href = "OrderDetails.html";
+
 };
 
 </script>
 
+</div>
+
 <div class="bottom-nav">
 
-  <a href="home.html" class="nav-item">
-    <i class="fas fa-home"></i>
-    <span>Home</span>
-  </a>
-
-  <a href="topup.html" class="nav-item active">
-    <i class="fas fa-gem"></i>
-    <span>Shop</span>
-  </a>
-
-  <a href="payment.html" class="nav-item">
-    <i class="fas fa-bolt"></i>
-    <span>Payment</span>
-  </a>
-
-  <a href="history.html" class="nav-item">
-  <i class="fas fa-clock-rotate-left"></i>
-  <span>History</span>
+<a href="home.html" class="nav-item">
+<i class="fas fa-home"></i>
+<span>Home</span>
 </a>
 
-  <a href="profile.html" class="nav-item">
-    <i class="fas fa-user"></i>
-    <span>Profile</span>
-  </a>
+<a href="topup.html" class="nav-item">
+<i class="fas fa-gem"></i>
+<span>Shop</span>
+</a>
+
+<a href="wallet-topup.html" class="nav-item active">
+<i class="fas fa-wallet"></i>
+<span>Wallet</span>
+</a>
+
+<a href="history.html" class="nav-item">
+<i class="fas fa-clock-rotate-left"></i>
+<span>History</span>
+</a>
+
+<a href="profile.html" class="nav-item">
+<i class="fas fa-user"></i>
+<span>Profile</span>
+</a>
 
 </div>
+
 <script src="theme.js"></script>
 </body>
 </html>

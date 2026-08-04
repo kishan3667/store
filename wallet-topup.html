@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Wallet Top Up</title>
+
+<link rel="icon" href="1.jpg">
+<link rel="stylesheet" href="wallet-topup.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h2>💰 Wallet Top Up</h2>
+
+<input
+type="number"
+id="amount"
+placeholder="Enter Amount (Rs.)">
+
+<input
+type="tel"
+id="whatsapp"
+placeholder="WhatsApp Number">
+
+<div class="upload-box">
+
+<h3>Upload Payment Receipt</h3>
+
+<label for="receipt" class="upload-btn">
+Choose Receipt
+</label>
+
+<input
+type="file"
+id="receipt"
+accept="image/*"
+hidden>
+
+<p id="fileText"></p>
+
+<img
+id="previewImage"
+style="display:none;width:100%;margin-top:10px;border-radius:10px;">
+
+</div>
+
+<button id="submitBtn">
+Submit Wallet Top Up
+</button>
+
+<p id="msg"></p>
+
+</div>
+
+</div>
+
+<div class="bottom-nav">
+
+<a href="home.html" class="nav-item">
+<i class="fas fa-home"></i>
+<span>Home</span>
+</a>
+
+<a href="topup.html" class="nav-item">
+<i class="fas fa-gem"></i>
+<span>Shop</span>
+</a>
+
+<a href="wallet-topup.html" class="nav-item active">
+<i class="fas fa-wallet"></i>
+<span>Wallet</span>
+</a>
+
+<a href="history.html" class="nav-item">
+<i class="fas fa-clock-rotate-left"></i>
+<span>History</span>
+</a>
+
+<a href="profile.html" class="nav-item">
+<i class="fas fa-user"></i>
+<span>Profile</span>
+</a>
+
+</div>
+
+<script type="module" src="wallet-topup.js"></script>
+
+</body>
+</html>

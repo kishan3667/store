@@ -123,21 +123,6 @@ async () => {
         msg.textContent =
         "❌ Wallet balance is not enough.";
 
-        setTimeout(() => {
-
-            if (
-                confirm(
-                "Your wallet balance is low.\n\nDo you want to top up your wallet?"
-                )
-            ) {
-
-                location.href =
-                "wallet-topup.html";
-
-            }
-
-        }, 500);
-
         return;
 
     }

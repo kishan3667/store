@@ -1,310 +1,480 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profile</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1.0,
+maximum-scale=1.0,
+user-scalable=no">
+
+<title>Phoenix Profile</title>
+
+<link rel="icon" href="1.jpg">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
 <link rel="stylesheet" href="theme.css">
 <link rel="stylesheet" href="theme-st.css">
 <link rel="stylesheet" href="media-st.css">
 
-<style>
-html,body,*{
-  -webkit-user-select:none;
-  user-select:none;
-  -webkit-touch-callout:none;
-}
-
-body{
-  font-family:Arial,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
-
-.profile-container{
-  background:var(--card);
-  padding:20px;
-  border-radius:12px;
-  width:300px;
-  text-align:center;
-  border:1px solid var(--border);
-  box-shadow:0 4px 10px rgba(0,0,0,.15);
-}
-
-.profile-img-box img{
-  width:100px;
-  height:100px;
-  border-radius:50%;
-  object-fit:cover;
-  border:3px solid var(--primary);
-}
-
-button{
-  margin-top:10px;
-  padding:8px 15px;
-  border:none;
-  background:var(--primary);
-  color:#fff;
-  border-radius:6px;
-  cursor:pointer;
-  transition:.3s;
-}
-
-button:hover{
-  opacity:.9;
-}
-
-input{
-  width:90%;
-  margin:8px 0;
-  padding:8px;
-  background:var(--bg);
-  color:var(--text);
-  border:1px solid var(--border);
-  border-radius:6px;
-  outline:none;
-}
-
-input::placeholder{
-  color:var(--text2);
-}
-
-.bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  width:100%;
-  height:70px;
-  display:flex;
-  justify-content:space-around;
-  align-items:center;
-  background:var(--card);
-  border-top:1px solid var(--border);
-  backdrop-filter:blur(15px);
-  box-shadow:0 -5px 20px rgba(0,0,0,.2);
-  z-index:1000;
-}
-
-.nav-item{
-  text-align:center;
-  text-decoration:none;
-  color:var(--text2);
-  font-size:12px;
-  transition:.3s;
-}
-
-.nav-item i{
-  display:block;
-  font-size:22px;
-  margin-bottom:4px;
-}
-
-.nav-item:hover,
-.nav-item.active{
-  color:var(--primary);
-}
-
-#toast{
-  position:fixed;
-  top:25px;
-  left:50%;
-  transform:translateX(-50%);
-  background:var(--card);
-  color:var(--text);
-  padding:14px 25px;
-  border-radius:12px;
-  border:1px solid var(--primary);
-  box-shadow:0 0 20px rgba(56,189,248,.25);
-  opacity:0;
-  pointer-events:none;
-  transition:.3s;
-  z-index:9999;
-}
-
-#toast.show{
-  opacity:1;
-  top:40px;
-}
-
-</style>
+<link rel="stylesheet"
+href="profile.css">
 
 </head>
 
 <body>
 
-<div class="profile-container">
+<!-- ===========================
+PROFILE HEADER
+=========================== -->
 
-  <!-- Image -->
-  <div class="profile-img-box">
-    <img id="profilePic" src="pro.jpg">
-    <input type="file" id="upload" hidden>
-    <br>
-  <button id="uploadBtn" onclick="uploadImg()">Change Photo</button>
-  </div>
+<header class="profile-header">
 
-  <!-- Info -->
-  <div class="profile-info">
-    <input type="text" id="username" placeholder="Username">
-    <input type="email" id="email" placeholder="Email" readonly>
-    <button onclick="saveProfile()">Save Changes</button>
-    <br><br>
-    <button onclick="logoutUser()">Logout</button>
-  </div>
+<div class="banner">
+
+<img
+src="phoenix-banner.jpg"
+alt="Phoenix Banner">
+
+<div class="banner-overlay"></div>
 
 </div>
 
-<script type="module" src="profile.js"></script>
+<div class="profile-main">
 
-<style>
+<div class="profile-left">
 
-  /* ===== PHOENIX TK NEON GAMING UPGRADE ===== */
+<div class="avatar-box">
 
+<img
+id="profileAvatar"
+src="default-avatar.jpg"
+alt="Profile">
 
-*{
-  box-sizing:border-box;
-  scroll-behavior:smooth;
-}
+<input
+type="file"
+id="avatarInput"
+accept="image/*"
+hidden>
 
-body{
-  font-family:'Orbitron',sans-serif !important;
-  background:
-    radial-gradient(circle at top left, rgba(0,255,255,.15), transparent 25%),
-    radial-gradient(circle at bottom right, rgba(140,0,255,.15), transparent 25%),
-    linear-gradient(135deg,#050816,#0b1023,#090014) !important;
-  min-height:100vh;
-  overflow-x:hidden;
-}
+<button
+id="avatarBtn"
+class="avatar-edit">
 
-.login-card,
-.card,
-.payment-box,
-.topup-box{
-  backdrop-filter: blur(14px);
-  background: rgba(255,255,255,0.06) !important;
-  border:1px solid rgba(0,255,255,.25) !important;
-  box-shadow:
-    0 0 12px rgba(0,255,255,.25),
-    0 0 35px rgba(140,0,255,.15);
-  border-radius:22px !important;
-}
+<i class="fa-solid fa-camera"></i>
 
-.card{
-  transition:all .35s ease;
-}
+</button>
 
-.card:hover{
-  transform:translateY(-8px) scale(1.02);
-  box-shadow:
-    0 0 20px #00ffff,
-    0 0 40px rgba(0,255,255,.7),
-    0 0 60px rgba(128,0,255,.4);
-}
+</div>
 
-button,
-.btn,
-.submit-btn{
-  background:linear-gradient(90deg,#00f0ff,#7a00ff) !important;
-  color:white !important;
-  border:none !important;
-  border-radius:14px !important;
-  padding:12px 20px !important;
-  font-weight:700 !important;
-  letter-spacing:1px;
-  transition:.3s ease;
-  box-shadow:0 0 18px rgba(0,255,255,.4);
-}
+<div class="profile-info">
 
-button:hover,
-.btn:hover,
-.submit-btn:hover{
-  transform:scale(1.05);
-  box-shadow:
-    0 0 15px #00ffff,
-    0 0 30px #7a00ff;
-}
+<h1 id="profileName">
 
-input,
-select,
-textarea{
-  background:rgba(0,0,0,.45) !important;
-  border:1px solid rgba(0,255,255,.35) !important;
-  color:white !important;
-  border-radius:14px !important;
-  padding:12px !important;
-  outline:none;
-}
+Loading...
 
-input:focus,
-select:focus,
-textarea:focus{
-  box-shadow:0 0 15px rgba(0,255,255,.6);
-}
+</h1>
 
+<div class="verify-row">
 
-.back{
-  background:linear-gradient(90deg,#00e5ff,#8a2eff) !important;
-  color:white !important;
-  border-radius:12px !important;
-  box-shadow:0 0 15px rgba(0,255,255,.6);
-}
+<span
+class="verify-badge">
 
-::-webkit-scrollbar{
-  width:8px;
-}
+<i class="fa-solid fa-circle-check"></i>
 
-::-webkit-scrollbar-thumb{
-  background:linear-gradient(#00ffff,#7a00ff);
-  border-radius:10px;
-}
+Verified
 
-@media(max-width:768px){
-  .card{
-    padding:16px !important;
-  }
+</span>
 
-  h1,h2{
-    font-size:22px !important;
-  }
-}
+</div>
 
-</style>
+<p id="profileEmail">
 
-<div class="bottom-nav">
+Loading...
 
-<a href="home.html" class="nav-item">
+</p>
+
+<p id="memberSince">
+
+Loading...
+
+</p>
+
+</div>
+
+</div>
+
+<div class="profile-level">
+
+<img
+src="phoenix-level.jpg"
+alt="Phoenix Level">
+
+<h3>
+
+Phoenix I
+
+</h3>
+
+</div>
+
+</div>
+
+</header>
+
+<!-- ===========================
+PROFILE STATS
+=========================== -->
+
+<main class="profile-container">
+
+<div class="stats-grid">
+
+<div class="stat-card red">
+
+<div class="stat-icon">
+<i class="fa-solid fa-bag-shopping"></i>
+</div>
+
+<div class="stat-content">
+
+<h4>Total Orders</h4>
+
+<h2 id="totalOrders">
+0
+</h2>
+
+<p>
+View all orders
+</p>
+
+</div>
+
+<i class="fa-solid fa-arrow-right stat-arrow"></i>
+
+</div>
+
+<div class="stat-card blue">
+
+<div class="stat-icon">
+<i class="fa-solid fa-gem"></i>
+</div>
+
+<div class="stat-content">
+
+<h4>Total Spent</h4>
+
+<h2 id="totalSpent">
+
+Rs. 0.00
+
+</h2>
+
+<p>
+
+All time spending
+
+</p>
+
+</div>
+
+<i class="fa-solid fa-arrow-right stat-arrow"></i>
+
+</div>
+
+<div class="stat-card green">
+
+<div class="stat-icon">
+<i class="fa-solid fa-wallet"></i>
+</div>
+
+<div class="stat-content">
+
+<h4>Wallet Balance</h4>
+
+<h2 id="walletBalance">
+
+Rs. 0.00
+
+</h2>
+
+<p>
+
+Available Balance
+
+</p>
+
+</div>
+
+<i class="fa-solid fa-arrow-right stat-arrow"></i>
+
+</div>
+
+<div class="stat-card orange">
+
+<div class="stat-icon">
+<i class="fa-solid fa-star"></i>
+</div>
+
+<div class="stat-content">
+
+<h4>Reward Points</h4>
+
+<h2 id="rewardPoints">
+
+0
+
+</h2>
+
+<p>
+
+Phoenix Rewards
+
+</p>
+
+</div>
+
+<i class="fa-solid fa-arrow-right stat-arrow"></i>
+
+</div>
+
+</div>
+
+<!-- ===========================
+ACCOUNT + RECENT ACTIVITY
+=========================== -->
+
+<div class="content-grid">
+
+<!-- Account Details -->
+
+<section class="glass-card">
+
+<div class="card-title">
+
+<i class="fa-regular fa-user"></i>
+
+<h2>Account Details</h2>
+
+</div>
+
+<div class="account-list">
+
+<div class="account-row">
+
+<span>Username</span>
+
+<strong id="detailUsername">
+
+Loading...
+
+</strong>
+
+</div>
+
+<div class="account-row">
+
+<span>Email</span>
+
+<strong id="detailEmail">
+
+Loading...
+
+</strong>
+
+</div>
+
+<div class="account-row">
+
+<span>Member Since</span>
+
+<strong id="detailMember">
+
+Loading...
+
+</strong>
+
+</div>
+
+<div class="account-row">
+
+<span>Account Status</span>
+
+<strong class="status-active">
+
+Verified
+
+</strong>
+
+</div>
+
+</div>
+
+<button
+id="changePhotoBtn"
+class="primary-btn">
+
+<i class="fa-solid fa-camera"></i>
+
+Change Profile Photo
+
+</button>
+
+</section>
+
+<!-- Recent Activity -->
+
+<section class="glass-card">
+
+<div class="card-title">
+
+<i class="fa-solid fa-clock-rotate-left"></i>
+
+<h2>Recent Activity</h2>
+
+</div>
+
+<div
+id="recentActivity"
+class="activity-list">
+
+<div class="activity-empty">
+
+<i class="fa-solid fa-box-open"></i>
+
+<p>
+
+No recent orders
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+<!-- ===========================
+PHOENIX ELITE
+=========================== -->
+
+<section class="elite-card">
+
+<div class="elite-left">
+
+<div class="elite-icon">
+
+<i class="fa-solid fa-crown"></i>
+
+</div>
+
+<div>
+
+<h2>Become a Phoenix Elite!</h2>
+
+<p>
+Enjoy exclusive benefits, priority support and higher rewards with Phoenix Elite membership.
+</p>
+
+</div>
+
+</div>
+
+<button
+class="elite-btn">
+
+Upgrade Now
+
+</button>
+
+</section>
+
+<!-- ===========================
+LOGOUT
+=========================== -->
+
+<div class="logout-area">
+
+<button
+id="logoutBtn"
+class="logout-btn">
+
+<i class="fa-solid fa-right-from-bracket"></i>
+
+Logout
+
+</button>
+
+</div>
+
+</main>
+
+<!-- ===========================
+BOTTOM NAVIGATION
+=========================== -->
+
+<nav class="bottom-nav">
+
+<a href="home.html"
+class="nav-item">
+
 <i class="fas fa-home"></i>
+
 <span>Home</span>
+
 </a>
 
-<a href="topup.html" class="nav-item">
+<a href="topup.html"
+class="nav-item">
+
 <i class="fas fa-gem"></i>
+
 <span>Shop</span>
+
 </a>
 
-<a href="wallet-topup.html" class="nav-item active">
+<a href="wallet-topup.html"
+class="nav-item">
+
 <i class="fas fa-wallet"></i>
+
 <span>Wallet</span>
+
 </a>
 
-<a href="history.html" class="nav-item">
+<a href="history.html"
+class="nav-item">
+
 <i class="fas fa-clock-rotate-left"></i>
+
 <span>History</span>
+
 </a>
 
-<a href="profile.html" class="nav-item">
+<a href="profile.html"
+class="nav-item active">
+
 <i class="fas fa-user"></i>
+
 <span>Profile</span>
+
 </a>
 
-</div>
+</nav>
+
+<!-- Toast -->
 
 <div id="toast"></div>
-<script src="theme.js"></script>
-</body>
 
+<script type="module" src="profile.js"></script>
+<script src="theme.js"></script>
+
+</body>
 </html>

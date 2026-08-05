@@ -109,21 +109,7 @@ Loading...
 
 </div>
 
-<div class="profile-level">
 
-<img
-src="phoenix-level.jpg"
-alt="Phoenix Level">
-
-<h3>
-
-Phoenix I
-
-</h3>
-
-</div>
-
-</div>
 
 </header>
 
@@ -315,16 +301,6 @@ Verified
 
 </div>
 
-<button
-id="changePhotoBtn"
-class="primary-btn">
-
-<i class="fa-solid fa-camera"></i>
-
-Change Profile Photo
-
-</button>
-
 </section>
 
 <!-- Recent Activity -->
@@ -472,6 +448,66 @@ class="nav-item active">
 <!-- Toast -->
 
 <div id="toast"></div>
+
+<!-- =====================================
+PHOTO UPLOAD LOADER
+===================================== -->
+
+<div id="photoOverlay" class="photo-overlay">
+
+    <div class="photo-popup">
+
+        <div class="photo-circle">
+
+            <svg class="progress-svg" viewBox="0 0 160 160">
+
+                <circle
+                    class="progress-bg"
+                    cx="80"
+                    cy="80"
+                    r="70">
+                </circle>
+
+                <circle
+                    id="progressCircle"
+                    class="progress-bar"
+                    cx="80"
+                    cy="80"
+                    r="70">
+                </circle>
+
+            </svg>
+
+            <img
+                id="previewPhoto"
+                src=""
+                alt="Preview">
+
+            <div
+                id="uploadSuccess"
+                class="upload-success">
+
+                <i class="fa-solid fa-check"></i>
+
+            </div>
+
+        </div>
+
+        <h3 id="uploadTitle">
+
+            Updating Profile Photo...
+
+        </h3>
+
+        <p id="uploadSub">
+
+            Please wait a moment
+
+        </p>
+
+    </div>
+
+</div>
 
 <script type="module" src="profile.js"></script>
 <script src="theme.js"></script>

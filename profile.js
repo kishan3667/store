@@ -472,13 +472,25 @@ reader.readAsDataURL(file);
 // LOGOUT
 // =============================
 
-window.logout = async function(){
+const logoutPopup =
+document.getElementById("logoutPopup");
 
-const ok = confirm(
-"Are you sure you want to logout?"
-);
+document.getElementById("logoutBtn")
+.addEventListener("click", ()=>{
 
-if(!ok) return;
+logoutPopup.classList.add("show");
+
+});
+
+document.getElementById("cancelLogout")
+.addEventListener("click", ()=>{
+
+logoutPopup.classList.remove("show");
+
+});
+
+document.getElementById("confirmLogout")
+.addEventListener("click", async ()=>{
 
 await supabase.auth.signOut();
 
@@ -486,7 +498,7 @@ localStorage.clear();
 
 location.href = "index.html";
 
-};
+});
 
 // =============================
 // REFRESH PROFILE
@@ -522,3 +534,6 @@ console.log(
 
 document.getElementById("avatarBtn")
 .addEventListener("click", changePhoto);
+
+document.getElementById("logoutBtn")
+.addEventListener("click", logout);

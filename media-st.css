@@ -1,0 +1,13 @@
+/* Mobile */
+@media (max-width: 768px){
+
+.container{
+    padding:20px;
+    padding-bottom:110px;
+}
+
+.card{
+    margin:10px 0;
+}
+
+}

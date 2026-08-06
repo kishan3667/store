@@ -1,642 +1,957 @@
-import { createClient } from
-"https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabaseUrl =
-"https://tvhgxlqqeklrdlgbkosa.supabase.co";
+/* ===========================================
+   PHOENIX ADMIN PANEL
+   VERSION 2.0
+=========================================== */
 
-const supabaseKey =
-"sb_publishable_Ep28HPF1SXIXQXBF2i__eg_h_jmjw4I";
+const supabase = createClient(
+  "https://tvhgxlqqeklrdlgbkosa.supabase.co",
+  "sb_publishable_Ep28HPF1SXIXQXBF2i__eg_h_jmjw4I"
+);
 
-const supabase =
-createClient(supabaseUrl, supabaseKey);
-
-const { data, error } = await supabase.auth.getSession();
-
-console.log(data.session);
-
-
-// 🔒 Protect admin page
-if (localStorage.getItem("admin") !== "true") {
-  window.location.href = "index.html";
-}
-
-// Logout
-window.logout = async function () {
-
-  await supabase.auth.signOut();
-
-  localStorage.removeItem("admin");
-
-  window.location.href = "index.html";
-
-};
+/* ===========================================
+   GLOBAL ELEMENTS
+=========================================== */
 
 const box = document.getElementById("contentBox");
 
-const walletPopup = document.getElementById("walletPopup");
-const walletAmount = document.getElementById("walletAmount");
-const walletOk = document.getElementById("walletOk");
-const walletCancel = document.getElementById("walletCancel");
+const sidebar = document.getElementById("sidebar");
+
+const overlay = document.getElementById("overlay");
+
+const loading = document.getElementById("loadingIcon");
+
 const toast = document.getElementById("toast");
 
-function showToast(message, color = "#22c55e") {
-  toast.innerText = message;
-  toast.style.background = color;
-  toast.classList.add("show");
+const walletPopup =
+document.getElementById("walletPopup");
 
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2000);
+const walletAmount =
+document.getElementById("walletAmount");
+
+const walletOk =
+document.getElementById("walletOk");
+
+const walletCancel =
+document.getElementById("walletCancel");
+
+/* ===========================================
+   CURRENT ADMIN
+=========================================== */
+
+let currentAdmin = null;
+
+/* ===========================================
+   LOADING
+=========================================== */
+
+function showLoading(){
+
+loading.style.display="flex";
+
 }
 
-// Sidebar
-window.openSidebar = function () {
-  document.getElementById("sidebar").classList.add("active");
-  document.getElementById("overlay").classList.add("active");
-};
+function hideLoading(){
 
-window.closeSidebar = function () {
-  document.getElementById("sidebar").classList.remove("active");
-  document.getElementById("overlay").classList.remove("active");
-};
+loading.style.display="none";
 
-// Dashboard
-window.showDashboard = async function () {
+}
 
-  closeSidebar();
+/* ===========================================
+   TOAST
+=========================================== */
 
-  const { count: totalUsers } =
-  await supabase
-    .from("profiles")
-    .select("*", { count: "exact", head: true });
+function showToast(text,color="#16a34a"){
 
-  const { data: orders } =
-  await supabase
-    .from("orders")
-    .select("*");
+toast.innerText=text;
 
-    console.log("ORDERS:", orders);
+toast.style.background=color;
 
-  const totalOrders = orders.length;
+toast.classList.add("show");
 
-  let success = 0;
-  let rejected = 0;
-  let pending = 0;
+setTimeout(()=>{
 
-  orders.forEach((order) => {
+toast.classList.remove("show");
 
-    if (order.status === "success") {
-      success++;
-    } else if (order.status === "reject") {
-      rejected++;
-    } else {
-      pending++;
-    }
+},2500);
 
-  });
+}
 
-  let successPer =
-    totalOrders ? ((success / totalOrders) * 100).toFixed(0) : 0;
+/* ===========================================
+   SIDEBAR
+=========================================== */
 
-  let rejectPer =
-    totalOrders ? ((rejected / totalOrders) * 100).toFixed(0) : 0;
+window.openSidebar=()=>{
 
-  let pendingPer =
-    totalOrders ? ((pending / totalOrders) * 100).toFixed(0) : 0;
+sidebar.classList.add("active");
 
-  box.innerHTML = `
-  <h2>📊 Dashboard Analytics</h2><br>
-
-  <div class="cards">
-    <div class="card">
-      <h3>👤 Users</h3>
-      <p>${totalUsers || 0}</p>
-    </div>
-
-    <div class="card">
-      <h3>📦 Orders</h3>
-      <p>${totalOrders}</p>
-    </div>
-
-    <div class="card">
-      <h3>✅ Success</h3>
-      <p>${successPer}%</p>
-    </div>
-
-    <div class="card">
-      <h3>❌ Rejected</h3>
-      <p>${rejectPer}%</p>
-    </div>
-
-    <div class="card">
-      <h3>🟡 Pending</h3>
-      <p>${pendingPer}%</p>
-    </div>
-  </div>
-  `;
+overlay.classList.add("active");
 
 };
 
-// 🔥 Users (Firestore)
-window.viewUsers = async function () {
+window.closeSidebar=()=>{
 
-  closeSidebar();
+sidebar.classList.remove("active");
 
-  const { data: users, error } =
-  await supabase
-    .from("profiles")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  let html = "<h2>👤 Users List</h2><br>";
-
-  if (error) {
-    box.innerHTML = "<h2>Failed to load users ❌</h2>";
-    return;
-  }
-
-  users.forEach((user) => {
-
-    html += `
-    <div style="
-      background:#0f172a;
-      padding:15px;
-      margin-bottom:10px;
-      border-radius:10px;
-    ">
-
-      <p>👤 ${user.username || "No Username"}</p>
-
-      <p>📧 ${user.email}</p>
-
-      <p>🆔 ${user.id}</p>
-
-    </div>
-    `;
-
-  });
-
-  box.innerHTML = html;
+overlay.classList.remove("active");
 
 };
 
-// Other buttons
-window.viewTopups = async function () {
+/* ===========================================
+   AUTH CHECK
+=========================================== */
 
-  closeSidebar();
+async function checkAdmin(){
 
-  const { data: orders, error } = await supabase
-    .from("orders")
-    .select("*");
+showLoading();
 
-  let html = "<h2>💰 Successful Topups</h2><br>";
+const {
 
-  if (error) {
-    box.innerHTML = "<h2>Failed to load orders ❌</h2>";
-    return;
-  }
+data:{session}
 
-  orders.forEach((data) => {
+}=await supabase.auth.getSession();
 
-    if (data.status === "success") {
+if(!session){
 
-      html += `
-      <div style="
-        background:#0f172a;
-        padding:15px;
-        margin-bottom:10px;
-        border-radius:10px;
-      ">
-        <p>🎮 UID : ${data.uid}</p>
-        <p>🎮 Product : ${data.product_name}</p>
-        <p>📂 Category : ${data.category}</p>
-        <p>💵 Price : Rs. ${Number(data.price).toFixed(2)}</p>
-        <p style="color:lime;">✅ Status : success</p>
-        <p>👤 User ID : ${data.user_id}</p>
-      </div>
-      `;
+location.href="adminlogin.html";
 
-    }
+return;
 
-  });
+}
 
-  box.innerHTML = html;
+currentAdmin=session.user;
+
+const {
+
+data:admin,
+
+error
+
+}=await supabase
+
+.from("admin_users")
+
+.select("*")
+
+.eq("id",currentAdmin.id)
+
+.single();
+
+if(error||!admin){
+
+await supabase.auth.signOut();
+
+location.href="index.html";
+
+return;
+
+}
+
+hideLoading();
+
+loadCounts();
+
+showDashboard();
+
+}
+
+/* ===========================================
+   LOGOUT
+=========================================== */
+
+window.logout=async()=>{
+
+await supabase.auth.signOut();
+
+location.replace("index.html");
 
 };
 
-window.viewOrders = async function () {
+checkAdmin();
 
-  closeSidebar();
+/* ===========================================
+   LOAD DASHBOARD COUNTS
+=========================================== */
 
-  const { data: orders, error } =
-await supabase
+async function loadCounts() {
+
+try{
+
+const {
+
+count:usersCount
+
+}=await supabase
+
+.from("profiles")
+
+.select("*",{
+count:"exact",
+head:true
+});
+
+document.getElementById("usersCount").innerText=
+usersCount||0;
+
+
+const {
+
+data:orders=[]
+
+}=await supabase
+
 .from("orders")
+
+.select("*");
+
+document.getElementById("ordersCount").innerText=
+orders.length;
+
+
+const successOrders=
+
+orders.filter(o=>o.status==="success");
+
+document.getElementById("topupCount").innerText=
+successOrders.length;
+
+
+const {
+
+data:walletPending=[]
+
+}=await supabase
+
+.from("wallet_topups")
+
+.select("*")
+
+.eq("status","pending");
+
+document.getElementById("walletPendingCount").innerText=
+walletPending.length;
+
+}catch(err){
+
+console.error(err);
+
+showToast("Dashboard Load Failed","#dc2626");
+
+}
+
+}
+
+
+/* ===========================================
+   DASHBOARD
+=========================================== */
+
+window.showDashboard=async()=>{
+
+closeSidebar();
+
+showLoading();
+
+try{
+
+const {
+
+count:totalUsers
+
+}=await supabase
+
+.from("profiles")
+
+.select("*",{
+count:"exact",
+head:true
+});
+
+const {
+
+data:orders=[]
+
+}=await supabase
+
+.from("orders")
+
+.select("*");
+
+const totalOrders=
+orders.length;
+
+const success=
+orders.filter(x=>x.status==="success").length;
+
+const rejected=
+orders.filter(x=>x.status==="reject").length;
+
+const pending=
+orders.filter(
+x=>!x.status||
+x.status==="pending"||
+x.status==="Pending"
+).length;
+
+const successPercent=
+totalOrders?
+((success/totalOrders)*100).toFixed(0):0;
+
+const rejectPercent=
+totalOrders?
+((rejected/totalOrders)*100).toFixed(0):0;
+
+const pendingPercent=
+totalOrders?
+((pending/totalOrders)*100).toFixed(0):0;
+
+box.innerHTML=`
+
+<h2>📊 Dashboard Analytics</h2>
+
+<br>
+
+<div class="cards">
+
+<div class="card">
+
+<h3>👤 Users</h3>
+
+<p>${totalUsers||0}</p>
+
+</div>
+
+<div class="card">
+
+<h3>📦 Orders</h3>
+
+<p>${totalOrders}</p>
+
+</div>
+
+<div class="card">
+
+<h3>✅ Success</h3>
+
+<p>${successPercent}%</p>
+
+</div>
+
+<div class="card">
+
+<h3>❌ Reject</h3>
+
+<p>${rejectPercent}%</p>
+
+</div>
+
+<div class="card">
+
+<h3>⏳ Pending</h3>
+
+<p>${pendingPercent}%</p>
+
+</div>
+
+</div>
+
+`;
+
+}catch(err){
+
+console.error(err);
+
+showToast("Dashboard Error","#dc2626");
+
+}
+
+hideLoading();
+
+};
+
+/* ===========================================
+   USERS LIST
+=========================================== */
+
+window.viewUsers = async () => {
+
+closeSidebar();
+
+showLoading();
+
+try {
+
+const { data: users, error } = await supabase
+.from("profiles")
 .select("*")
 .order("created_at", { ascending: false });
 
-console.log("ORDERS:", orders);
-console.log("ERROR:", error);
-
-if (error) {
-  box.innerHTML = "<h2>Failed to load orders ❌</h2>";
-  return;
-}
+if (error) throw error;
 
 let html = `
-<h2>📦 Orders List</h2><br>
+<h2>👤 Registered Users</h2>
+<br>
+`;
+
+if (!users || users.length === 0) {
+
+html += `
+<div class="card">
+<h3>No Users Found</h3>
+</div>
+`;
+
+box.innerHTML = html;
+
+hideLoading();
+
+return;
+
+}
+
+users.forEach(user => {
+
+html += `
+
+<div class="card" style="margin-bottom:15px;text-align:left;">
+
+<h3>👤 ${user.username || "No Username"}</h3>
+
+<p><b>📧 Email :</b> ${user.email}</p>
+
+<p><b>🆔 User ID :</b> ${user.id}</p>
+
+<p><b>💰 Wallet :</b>
+Rs. ${Number(user.wallet_balance || 0).toFixed(2)}
+</p>
+
+<p><b>📅 Joined :</b>
+${new Date(user.created_at).toLocaleString()}
+</p>
+
+</div>
+
+`;
+
+});
+
+box.innerHTML = html;
+
+} catch (err) {
+
+console.error(err);
+
+showToast("Failed To Load Users", "#dc2626");
+
+box.innerHTML = `
+<h2>❌ Failed To Load Users</h2>
+`;
+
+}
+
+hideLoading();
+
+};
+
+/* ===========================================
+   ORDERS LIST
+=========================================== */
+
+window.viewOrders = async () => {
+
+closeSidebar();
+
+showLoading();
+
+try{
+
+const { data: orders, error } =
+await supabase
+.from("orders")
+.select("*")
+.order("created_at",{ascending:false});
+
+if(error) throw error;
+
+let html=`
+
+<h2>📦 Orders</h2>
+
+<br>
 
 <input
 id="searchUser"
 type="text"
-placeholder="Search User ID..."
+placeholder="Search UID / User ID / Product..."
 onkeyup="searchOrder()"
 style="
 width:100%;
-padding:10px;
-margin-bottom:15px;
-border-radius:10px;
+padding:12px;
+border-radius:12px;
+margin-bottom:20px;
+border:none;
+outline:none;
 ">
+
 `;
 
-if (orders.length === 0) {
-  html += "<p>No Orders Found</p>";
+if(!orders || orders.length===0){
+
+html+=`
+<div class="card">
+
+<h3>No Orders Found</h3>
+
+</div>
+`;
+
+box.innerHTML=html;
+
+hideLoading();
+
+return;
+
 }
 
-orders.forEach((data) => {
+orders.forEach(order=>{
 
-    html += `
-    <div style="
-      background:#0f172a;
-      padding:15px;
-      margin-bottom:10px;
-      border-radius:10px;
-    ">
-      <p>🆔 Order ID : ${data.id}</p>
-      <p>🎮 UID : ${data.uid}</p>
-      <p>🎮 Product : ${data.product_name}</p>
-      <p>📂 Category : ${data.category}</p>
-      <p>💵 Price : Rs. ${Number(data.price).toFixed(2)}</p>
-      <p>👤 User ID : ${data.user_id}</p>
-📌 Status :
-<span style="
-color:${
-data.status === 'success'
-? 'lime'
-: data.status === 'reject'
-? 'red'
-: 'orange'
-}">
-${data.status || 'pending'}
+const color=
+
+order.status==="success"
+?"lime"
+
+:order.status==="reject"
+?"red"
+
+:"orange";
+
+html+=`
+
+<div class="card"
+style="
+margin-bottom:18px;
+text-align:left;
+">
+
+<p><b>🆔 Order :</b> ${order.id}</p>
+
+<p><b>🎮 UID :</b> ${order.uid}</p>
+
+<p><b>📦 Product :</b>
+${order.product_name}
+</p>
+
+<p><b>📂 Category :</b>
+${order.category}
+</p>
+
+<p><b>💵 Price :</b>
+Rs.
+${Number(order.price).toFixed(2)}
+</p>
+
+<p><b>👤 User :</b>
+${order.user_id}
+</p>
+
+<p>
+
+<b>Status :</b>
+
+<span style="color:${color};">
+
+${order.status||"pending"}
+
+</span>
+
+</p>
+
+${
+order.receipt_url
+?
+
+`<p>
+
+<a
+href="${order.receipt_url}"
+target="_blank"
+style="color:#38bdf8;">
+
+📷 View Receipt
+
+</a>
+
+</p>`
+
+:""
+
+}
+
+<div
+style="
+display:flex;
+gap:10px;
+margin-top:12px;
+">
+
+<button
+onclick="setStatus('${order.id}','success')">
+
+✅ Success
+
+</button>
+
+<button
+onclick="setStatus('${order.id}','reject')">
+
+❌ Reject
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+box.innerHTML=html;
+
+}catch(err){
+
+console.error(err);
+
+showToast(
+"Failed To Load Orders",
+"#dc2626"
+);
+
+box.innerHTML=`
+<h2>❌ Failed To Load Orders</h2>
+`;
+
+}
+
+hideLoading();
+
+};
+
+/* ===========================================
+   UPDATE ORDER STATUS
+=========================================== */
+
+window.setStatus = async (id, status) => {
+
+try{
+
+showLoading();
+
+const { error } =
+await supabase
+.from("orders")
+.update({
+status
+})
+.eq("id", id);
+
+if(error) throw error;
+
+showToast("Status Updated ✅");
+
+await loadCounts();
+
+await viewOrders();
+
+}catch(err){
+
+console.error(err);
+
+showToast(
+"Update Failed",
+"#dc2626"
+);
+
+}
+
+hideLoading();
+
+};
+
+/* ===========================================
+   SUCCESS ORDERS
+=========================================== */
+
+window.viewTopups = async () => {
+
+closeSidebar();
+
+showLoading();
+
+try{
+
+const { data, error } =
+await supabase
+.from("orders")
+.select("*")
+.eq("status","success")
+.order("created_at",{ascending:false});
+
+if(error) throw error;
+
+let html="<h2>✅ Success Orders</h2><br>";
+
+if(data.length===0){
+
+html+="<div class='card'><h3>No Success Orders</h3></div>";
+
+}
+
+data.forEach(order=>{
+
+html+=`
+
+<div class="card"
+style="margin-bottom:15px;text-align:left;">
+
+<p><b>🎮 UID :</b> ${order.uid}</p>
+
+<p><b>📦 Product :</b> ${order.product_name}</p>
+
+<p><b>💰 Price :</b>
+Rs. ${Number(order.price).toFixed(2)}</p>
+
+<p style="color:lime;">
+✅ Success
+</p>
+
+</div>
+
+`;
+
+});
+
+box.innerHTML=html;
+
+}catch(err){
+
+console.error(err);
+
+showToast("Failed","#dc2626");
+
+}
+
+hideLoading();
+
+};
+
+/* ===========================================
+   REJECT ORDERS
+=========================================== */
+
+window.viewRejected = async()=>{
+
+closeSidebar();
+
+showLoading();
+
+try{
+
+const { data,error }=
+await supabase
+.from("orders")
+.select("*")
+.eq("status","reject")
+.order("created_at",{ascending:false});
+
+if(error) throw error;
+
+let html="<h2>❌ Rejected Orders</h2><br>";
+
+if(data.length===0){
+
+html+="<div class='card'><h3>No Rejected Orders</h3></div>";
+
+}
+
+data.forEach(order=>{
+
+html+=`
+
+<div class="card"
+style="margin-bottom:15px;text-align:left;">
+
+<p><b>🎮 UID :</b> ${order.uid}</p>
+
+<p><b>📦 Product :</b> ${order.product_name}</p>
+
+<p><b>💰 Price :</b>
+Rs. ${Number(order.price).toFixed(2)}</p>
+
+<p style="color:red;">
+❌ Reject
+</p>
+
+</div>
+
+`;
+
+});
+
+box.innerHTML=html;
+
+}catch(err){
+
+console.error(err);
+
+showToast("Failed","#dc2626");
+
+}
+
+hideLoading();
+
+};
+
+/* ===========================================
+   PENDING ORDERS
+=========================================== */
+
+window.viewPending = async()=>{
+
+closeSidebar();
+
+showLoading();
+
+try{
+
+const { data,error }=
+await supabase
+.from("orders")
+.select("*")
+.order("created_at",{ascending:false});
+
+if(error) throw error;
+
+const pending=data.filter(
+x=>!x.status||
+x.status==="pending"||
+x.status==="Pending"
+);
+
+let html="<h2>⏳ Pending Orders</h2><br>";
+
+if(pending.length===0){
+
+html+="<div class='card'><h3>No Pending Orders</h3></div>";
+
+}
+
+pending.forEach(order=>{
+
+html+=`
+
+<div class="card"
+style="margin-bottom:15px;text-align:left;">
+
+<p><b>🎮 UID :</b> ${order.uid}</p>
+
+<p><b>📦 Product :</b> ${order.product_name}</p>
+
+<p><b>💰 Price :</b>
+Rs. ${Number(order.price).toFixed(2)}</p>
+
+<p style="color:orange;">
+⏳ Pending
+</p>
+
+</div>
+
+`;
+
+});
+
+box.innerHTML=html;
+
+}catch(err){
+
+console.error(err);
+
+showToast("Failed","#dc2626");
+
+}
+
+hideLoading();
+
+};
+
+/* ===========================================
+   WALLET TOPUPS
+=========================================== */
+
+window.viewWalletTopups = async () => {
+
+closeSidebar();
+
+showLoading();
+
+try {
+
+const { data, error } = await supabase
+.from("wallet_topups")
+.select("*")
+.order("created_at", { ascending: false });
+
+if (error) throw error;
+
+let html = `<h2>💰 Wallet Topups</h2><br>`;
+
+if (!data || data.length === 0) {
+
+html += `
+<div class="card">
+<h3>No Wallet Requests</h3>
+</div>
+`;
+
+}
+
+data.forEach(item => {
+
+const color =
+item.status === "success"
+? "lime"
+: item.status === "reject"
+? "red"
+: "orange";
+
+html += `
+
+<div class="card" style="margin-bottom:18px;text-align:left;">
+
+<p><b>📧 Email :</b> ${item.email}</p>
+
+<p><b>📱 WhatsApp :</b> ${item.whatsapp}</p>
+
+<p><b>💰 Amount :</b>
+Rs. ${Number(item.amount).toFixed(2)}
+</p>
+
+<p>
+<b>Status :</b>
+<span style="color:${color}">
+${item.status}
 </span>
 </p>
 
-<br>
-
-<button onclick="setStatus('${data.id}','success')">
-✅ Success
-</button>
-
-<button onclick="setStatus('${data.id}','reject')">
-❌ Reject
-</button>
-
-    </div>
-    `;
-  });
-
-  box.innerHTML = html;
-};
-
-// 🔥 Load counts
-async function loadCounts() {
-
-  const { count: usersCount } =
-  await supabase
-    .from("profiles")
-    .select("*", { count: "exact", head: true });
-
-  document.getElementById("usersCount").innerText =
-    usersCount || 0;
-
-  const { data: orders } =
-  await supabase
-    .from("orders")
-    .select("*");
-
-  document.getElementById("ordersCount").innerText =
-    orders.length;
-
-  let successCount = 0;
-
-  orders.forEach((order) => {
-
-    if (order.status === "success") {
-      successCount++;
-    }
-
-  });
-
-  document.getElementById("topupCount").innerText =
-    successCount;
-
-  document.getElementById("loadingIcon").style.display =
-    "none";
-
-    const { data: walletOrders } = await supabase
-  .from("wallet_topups")
-  .select("*")
-  .eq("status", "pending");
-
-document.getElementById("walletPendingCount").innerText =
-  walletOrders ? walletOrders.length : 0;
-
+${
+item.receipt_url
+?
+`<a href="${item.receipt_url}" target="_blank">
+📷 View Receipt
+</a><br><br>`
+:""
 }
-
-loadCounts();
-showDashboard();
-
-window.setStatus = async function(id, status) {
-
-    console.log("ORDER ID:", id);
-    console.log("STATUS:", status);
-
-     const { data: sessionData } = await supabase.auth.getSession();
-
-     console.log("SESSION:", sessionData.session);
-
-const { data, error } = await supabase
-  .from("orders")
-  .update({ status: status })
-  .eq("id", id)
-  .select();
-
-console.log("UPDATE DATA:", data);
-console.log("UPDATE ERROR:", error);
-console.log("Updated:", data);
-console.log("Error:", error);
-
-  if (error) {
-    alert("Failed to update status!");
-    console.error(error);
-    return;
-  }
-
-  const msg = document.createElement("div");
-
-  msg.innerText = "Status Updated ✅";
-  msg.style.position = "fixed";
-  msg.style.top = "20px";
-  msg.style.right = "20px";
-  msg.style.background = "green";
-  msg.style.color = "white";
-  msg.style.padding = "10px";
-  msg.style.borderRadius = "8px";
-
-  document.body.appendChild(msg);
-
-  setTimeout(() => {
-    msg.remove();
-  }, 2000);
-
-  viewOrders();
-};
-
-window.viewRejected = async function () {
-
-  closeSidebar();
-
-  const { data: orders, error } = await supabase
-  .from("orders")
-  .select("*");
-
-  let html = "<h2>❌ Rejected Orders</h2><br>";
-
-orders.forEach((data) => {
-
-    if (data.status === "reject") {
-
-      html += `
-      <div style="
-        background:#0f172a;
-        padding:15px;
-        margin-bottom:10px;
-        border-radius:10px;
-      ">
-        <p>🎮 UID : ${data.uid}</p>
-        <p>🎮 Product : ${data.product_name}</p>
-        <p>📂 Category : ${data.category}</p>
-        <p>💵 Price : Rs. ${Number(data.price).toFixed(2)}</p>
-        <p style="color:red;">❌ Status : reject</p>
-        <p>👤 User ID : ${data.user_id}</p>
-      </div>
-      `;
-    }
-
-  });
-
-  box.innerHTML = html;
-};
-
-window.viewPending = async function () {
-
-  closeSidebar();
-
-const { data: orders, error } = await supabase
-.from("orders")
-.select("*");
-
-  let html = "<h2>⏳ Pending Orders</h2><br>";
-
-orders.forEach((data) => {
-
-    if (
-      data.status === "Pending" ||
-      !data.status
-    ) {
-
-      html += `
-      <div style="
-        background:#0f172a;
-        padding:15px;
-        margin-bottom:10px;
-        border-radius:10px;
-      ">
-        <p>🎮 UID : ${data.uid}</p>
-        <p>🎮 Product : ${data.product_name}</p>
-        <p>📂 Category : ${data.category}</p>
-        <p>💵 Price : Rs. ${Number(data.price).toFixed(2)}</p>
-        <p style="color:orange;">⏳ Status : pending</p>
-        <p>👤 User ID : ${data.user_id}</p>
-      </div>
-      `;
-    }
-
-  });
-
-  box.innerHTML = html;
-};
-
-window.maintenancePage = async function () {
-
-  closeSidebar();
-
-  const { data, error } = await supabase
-    .from("settings")
-    .select("maintenance")
-    .eq("id", 1)
-    .single();
-
-  if (error) {
-    box.innerHTML = "<h2>Failed to load maintenance settings ❌</h2>";
-    return;
-  }
-
-  box.innerHTML = `
-    <h2>🛠 Website Maintenance</h2>
-
-    <br>
-
-    <h3>Status :
-      <span style="color:${data.maintenance ? "red" : "lime"};">
-        ${data.maintenance ? "ON" : "OFF"}
-      </span>
-    </h3>
-
-    <br>
-
-    <button onclick="setMaintenance(true)">
-      🔴 Turn ON
-    </button>
-
-    <br><br>
-
-    <button onclick="setMaintenance(false)">
-      🟢 Turn OFF
-    </button>
-  `;
-
-};
-
-window.setMaintenance = async function(status){
-
-  const { error } = await supabase
-    .from("settings")
-    .update({ maintenance: status })
-    .eq("id", 1);
-
-  if(error){
-    alert("Failed");
-    return;
-  }
-
-  // புதிய data-வை மீண்டும் load பண்ணும்
-  await maintenancePage();
-
-}
-window.searchOrder = async function () {
-
-  const search =
-    document.getElementById("searchUser")
-    .value
-    .toLowerCase();
-
-  const { data: orders, error } = await supabase
-    .from("orders")
-    .select("*");
-
-  if (error) {
-    box.innerHTML = "<h2>Failed to search ❌</h2>";
-    return;
-  }
-
-  let html = `
-  <h2>📦 Search Results</h2><br>
-  `;
-
-  orders.forEach((data) => {
-
-if (
-  data.user_id?.toLowerCase().includes(search) ||
-  data.uid?.toLowerCase().includes(search) ||
-  data.product_name?.toLowerCase().includes(search)
-) {
-      html += `
-      <div style="
-      background:#0f172a;
-      padding:15px;
-      margin-bottom:10px;
-      border-radius:10px;
-      ">
-        <p>🎮 UID : ${data.uid}</p>
-        <p>🎮 Product : ${data.product_name}</p>
-        <p>📂 Category : ${data.category}</p>
-        <p>💵 Price : Rs. ${Number(data.price).toFixed(2)}</p>
-        <p>👤 User ID : ${data.user_id}</p>
-        <p>📌 Status : ${data.status}</p>
-      </div>
-      `;
-    }
-
-  });
-
-  box.innerHTML = html;
-
-};
-
-window.viewWalletTopups = async function () {
-
-  closeSidebar();
-
-  const { data: requests, error } = await supabase
-    .from("wallet_topups")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    box.innerHTML = "<h2>Failed to load wallet requests ❌</h2>";
-    return;
-  }
-
-  let html = "<h2>💰 Wallet Topup Requests</h2><br>";
-
-  if (requests.length === 0) {
-    html += "<p>No Wallet Requests</p>";
-  }
-
-  requests.forEach((item) => {
-
-    html += `
-      <div style="
-      background:#0f172a;
-      padding:15px;
-      margin-bottom:15px;
-      border-radius:10px;">
-
-      <p>📧 Email : ${item.email}</p>
-      <p>📱 WhatsApp : ${item.whatsapp}</p>
-      <p>💵 Requested : Rs.${item.amount}</p>
-
-      <p>
-      📌 Status :
-      <span style="
-      color:${
-        item.status === "success"
-          ? "lime"
-          : item.status === "reject"
-          ? "red"
-          : "orange"
-      };">
-      ${item.status}
-      </span>
-      </p>
-
-      <a href="${item.receipt_url}"
-      target="_blank"
-      style="color:#38bdf8;">
-      📷 View Receipt
-      </a>
-
-      <br><br>
 
 <button onclick="walletSuccess('${item.id}','${item.user_id}')">
 ✅ Success
@@ -646,121 +961,236 @@ window.viewWalletTopups = async function () {
 ❌ Reject
 </button>
 
-      </div>
-    `;
+</div>
 
-  });
+`;
 
-  box.innerHTML = html;
+});
+
+box.innerHTML = html;
+
+}catch(err){
+
+console.error(err);
+
+showToast("Wallet Load Failed","#dc2626");
+
+}
+
+hideLoading();
 
 };
 
-window.walletSuccess = async function(id, userId){
 
-  walletPopup.classList.add("active");
-  walletAmount.value = "";
-  walletAmount.focus();
+/* ===========================================
+   WALLET SUCCESS
+=========================================== */
 
-  walletCancel.onclick = () => {
-    walletPopup.classList.remove("active");
-  };
+window.walletSuccess = async(id,userId)=>{
 
-  walletOk.onclick = async () => {
+walletPopup.classList.add("active");
 
-const amount = walletAmount.value.trim();
+walletAmount.value="";
 
-if (!amount || isNaN(amount) || Number(amount) <= 0) {
-  alert("Enter valid amount");
-  return;
+walletCancel.onclick=()=>{
+
+walletPopup.classList.remove("active");
+
+};
+
+walletOk.onclick=async()=>{
+
+const amount=Number(walletAmount.value);
+
+if(!amount){
+
+alert("Enter Amount");
+
+return;
+
 }
 
 walletPopup.classList.remove("active");
 
-  // User wallet balance எடு
-const { data: profile, error: profileError } = await supabase
-  .from("profiles")
-  .select("wallet_balance")
-  .eq("id", userId)
-  .single();
+const { data: profile } = await supabase
+.from("profiles")
+.select("wallet_balance")
+.eq("id",userId)
+.single();
 
-console.log("PROFILE:", profile);
-console.log("PROFILE ERROR:", profileError);
+const current=Number(profile?.wallet_balance||0);
 
-if (profileError) {
-  alert(profileError.message);
-  return;
-}
+await supabase
+.from("profiles")
+.update({
+wallet_balance:current+amount
+})
+.eq("id",userId);
 
-console.log("userId =", userId);
+await supabase
+.from("wallet_topups")
+.update({
+status:"success"
+})
+.eq("id",id);
 
-const { data: profileCheck } = await supabase
-  .from("profiles")
-  .select("*")
-  .eq("id", userId);
+showToast("Wallet Updated");
 
-console.log("profileCheck =", profileCheck);
-
-  const currentWallet = Number(profile?.wallet_balance || 0);
-  const newWallet = currentWallet + Number(amount);
-
-const { error: walletError } = await supabase
-  .from("profiles")
-  .update({
-    wallet_balance: newWallet
-  })
-  .eq("id", userId);
-
-console.log(walletError);
-
-const { data: checkProfile } = await supabase
-  .from("profiles")
-  .select("wallet_balance")
-  .eq("id", userId)
-  .single();
-
-console.log("AFTER UPDATE =", checkProfile);
-
-if (walletError) {
-  alert(walletError.message);
-  return;
-}
-
-const { data: updatedRow, error: statusError } = await supabase
-  .from("wallet_topups")
-  .update({
-    status: "success"
-  })
-  .eq("id", id)
-  .select();
-
-console.log(updatedRow);
-console.log(statusError);
-
-if (statusError) {
-  alert(statusError.message);
-  return;
-}
-
-showToast("Wallet Updated Successfully ✅");
 loadCounts();
+
 viewWalletTopups();
 
 };
 
-  };
+};
 
-window.walletReject = async function(id){
 
-  await supabase
-    .from("wallet_topups")
-    .update({
-      status: "reject"
-    })
-    .eq("id", id);
+/* ===========================================
+   WALLET REJECT
+=========================================== */
 
-  showToast("Wallet Request Rejected ❌", "#ef4444");
+window.walletReject=async(id)=>{
+
+await supabase
+
+.from("wallet_topups")
+
+.update({
+status:"reject"
+})
+
+.eq("id",id);
+
+showToast("Rejected","#dc2626");
+
 loadCounts();
 
-  viewWalletTopups();
+viewWalletTopups();
+
+};
+
+
+/* ===========================================
+   MAINTENANCE
+=========================================== */
+
+window.maintenancePage=async()=>{
+
+closeSidebar();
+
+const { data } = await supabase
+
+.from("settings")
+
+.select("maintenance")
+
+.eq("id",1)
+
+.single();
+
+box.innerHTML=`
+
+<h2>🛠 Maintenance</h2>
+
+<br>
+
+<h3>
+
+Status :
+
+<span style="color:${data.maintenance?"red":"lime"}">
+
+${data.maintenance?"ON":"OFF"}
+
+</span>
+
+</h3>
+
+<br>
+
+<button onclick="setMaintenance(true)">
+🔴 Turn ON
+</button>
+
+<br><br>
+
+<button onclick="setMaintenance(false)">
+🟢 Turn OFF
+</button>
+
+`;
+
+};
+
+
+window.setMaintenance=async(status)=>{
+
+await supabase
+
+.from("settings")
+
+.update({
+maintenance:status
+})
+
+.eq("id",1);
+
+showToast("Updated");
+
+maintenancePage();
+
+};
+
+
+/* ===========================================
+   SEARCH
+=========================================== */
+
+window.searchOrder = async()=>{
+
+const keyword=document
+.getElementById("searchUser")
+.value
+.toLowerCase();
+
+const { data } =
+await supabase
+.from("orders")
+.select("*");
+
+const filtered=data.filter(item=>
+
+(item.uid||"").toLowerCase().includes(keyword)||
+
+(item.user_id||"").toLowerCase().includes(keyword)||
+
+(item.product_name||"").toLowerCase().includes(keyword)
+
+);
+
+let html="<h2>🔍 Search Result</h2><br>";
+
+filtered.forEach(item=>{
+
+html+=`
+
+<div class="card"
+style="margin-bottom:15px;text-align:left;">
+
+<p><b>UID :</b> ${item.uid}</p>
+
+<p><b>Product :</b> ${item.product_name}</p>
+
+<p><b>User :</b> ${item.user_id}</p>
+
+<p><b>Status :</b> ${item.status}</p>
+
+</div>
+
+`;
+
+});
+
+box.innerHTML=html;
 
 };

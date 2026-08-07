@@ -234,3 +234,15 @@ walletTab.classList.add("active");
 topupTab.classList.remove("active");
 
 };
+
+if (localStorage.getItem("openWalletHistory") === "true") {
+
+  localStorage.removeItem("openWalletHistory");
+
+  topupHistory.style.display = "none";
+  walletHistory.style.display = "block";
+
+  walletTab.classList.add("active");
+  topupTab.classList.remove("active");
+
+}

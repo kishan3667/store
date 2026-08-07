@@ -1,235 +1,438 @@
-/* 🔙 Back button */
-.back {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-
-  padding: 8px 15px;
-  border-radius: 8px;
-  border: none;
-
-  background: #00f2ff;
-  color: black;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  width: auto !important;
-  display: inline-block;
-
-  box-shadow: 0 0 10px #00f2ff;
-  z-index: 1000;
-
-  transition: 0.3s;
-}
-
-/* ✨ Hover effect */
-.back:hover{
-  box-shadow:
-    0 0 10px #00f2ff,
-    0 0 20px #00f2ff,
-    0 0 40px #00f2ff;
-
-  transform: scale(1.05);
-}
-
-/* 📱 Tablet */
-@media screen and (max-width: 1024px){
-
-  .back{
-    top: 15px;
-    left: 15px;
-    padding: 7px 14px;
-    font-size: 14px;
-  }
-
-}
-
-/* 📲 Mobile */
-@media screen and (max-width: 768px){
-
-  .back{
-    top: 10px;
-    left: 10px;
-    padding: 6px 12px;
-    font-size: 13px;
-  }
-
-}
-
-/* 📱 Small Mobile */
-@media screen and (max-width: 480px){
-
-  .back{
-    top: 8px;
-    left: 8px;
-    padding: 5px 10px;
-    font-size: 12px;
-  }
-
-}
-
-
-
-/* ===== PHOENIX TK NEON GAMING UPGRADE ===== */
-
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&display=swap');
-
 *{
-  box-sizing:border-box;
-  scroll-behavior:smooth;
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+user-select:none;
 }
 
 body{
-  font-family:'Orbitron',sans-serif !important;
-  background:
-    radial-gradient(circle at top left, rgba(0,255,255,.15), transparent 25%),
-    radial-gradient(circle at bottom right, rgba(140,0,255,.15), transparent 25%),
-    linear-gradient(135deg,#050816,#0b1023,#090014) !important;
-  min-height:100vh;
-  overflow-x:hidden;
+
+background:
+radial-gradient(circle at top left,#00e5ff22,transparent 35%),
+radial-gradient(circle at bottom right,#7b2cff22,transparent 35%),
+#070b16;
+
+color:#fff;
+
+display:flex;
+justify-content:center;
+
+min-height:100vh;
+
+padding:20px;
+
+padding-bottom:95px;
+
+overflow-x:hidden;
+
 }
 
-.login-card,
-.card,
-.container,
-.payment-box,
-.topup-box{
-  backdrop-filter: blur(14px);
-  background: rgba(255,255,255,0.06) !important;
-  border:1px solid rgba(0,255,255,.25) !important;
-  box-shadow:
-    0 0 12px rgba(0,255,255,.25),
-    0 0 35px rgba(140,0,255,.15);
-  border-radius:22px !important;
+.container{
+
+width:100%;
+max-width:430px;
+
 }
 
-.card{
-  transition:all .35s ease;
+.header{
+
+text-align:center;
+
+margin:20px 0 35px;
+
 }
 
-.card:hover{
-  transform:translateY(-8px) scale(1.02);
-  box-shadow:
-    0 0 20px #00ffff,
-    0 0 40px rgba(0,255,255,.7),
-    0 0 60px rgba(128,0,255,.4);
+.support-icon{
+
+width:90px;
+height:90px;
+
+margin:auto;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:42px;
+
+border-radius:50%;
+
+background:linear-gradient(135deg,#00d9ff,#6d32ff);
+
+box-shadow:
+0 0 20px #00d9ff,
+0 0 45px #6d32ff;
+
+animation:pulse 2s infinite;
+
 }
 
-button,
-.btn,
-.submit-btn{
-  background:linear-gradient(90deg,#00f0ff,#7a00ff) !important;
-  color:white !important;
-  border:none !important;
-  border-radius:14px !important;
-  padding:12px 20px !important;
-  font-weight:700 !important;
-  letter-spacing:1px;
-  transition:.3s ease;
-  box-shadow:0 0 18px rgba(0,255,255,.4);
+.header h1{
+
+margin-top:18px;
+
+font-size:28px;
+
+font-weight:800;
+
+letter-spacing:2px;
+
+color:#fff;
+
+text-shadow:
+0 0 15px #00e5ff;
+
 }
 
-button:hover,
-.btn:hover,
-.submit-btn:hover{
-  transform:scale(1.05);
-  box-shadow:
-    0 0 15px #00ffff,
-    0 0 30px #7a00ff;
+.header p{
+
+margin-top:12px;
+
+font-size:15px;
+
+line-height:24px;
+
+color:#a8c8ff;
+
 }
 
-input,
-select,
-textarea{
-  background:rgba(0,0,0,.45) !important;
-  border:1px solid rgba(0,255,255,.35) !important;
-  color:white !important;
-  border-radius:14px !important;
-  padding:12px !important;
-  outline:none;
+@keyframes pulse{
+
+0%{
+transform:scale(1);
 }
 
-input:focus,
-select:focus,
-textarea:focus{
-  box-shadow:0 0 15px rgba(0,255,255,.6);
+50%{
+transform:scale(1.08);
 }
 
-h1,h2,h3,h4{
-  color:#fff;
-  text-shadow:
-    0 0 8px #00ffff,
-    0 0 20px rgba(140,0,255,.7);
+100%{
+transform:scale(1);
 }
 
-.back{
-  background:linear-gradient(90deg,#00e5ff,#8a2eff) !important;
-  color:white !important;
-  border-radius:12px !important;
-  box-shadow:0 0 15px rgba(0,255,255,.6);
 }
 
-::-webkit-scrollbar{
-  width:8px;
+.support-card{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:18px;
+
+margin-bottom:20px;
+
+border-radius:20px;
+
+background:rgba(18,25,45,.92);
+
+border:1px solid rgba(255,255,255,.08);
+
+backdrop-filter:blur(15px);
+
+transition:.35s;
+
+box-shadow:
+0 0 15px rgba(0,0,0,.35);
+
 }
 
-::-webkit-scrollbar-thumb{
-  background:linear-gradient(#00ffff,#7a00ff);
-  border-radius:10px;
+.support-card:hover{
+
+transform:translateY(-6px);
+
+box-shadow:
+0 0 20px rgba(0,229,255,.45);
+
 }
+
+.left{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+}
+
+.icon{
+
+width:60px;
+
+height:60px;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+border-radius:15px;
+
+font-size:28px;
+
+color:#fff;
+
+}
+
+.whatsapp .icon{
+
+background:linear-gradient(135deg,#00d26a,#00ff95);
+
+box-shadow:0 0 15px #00ff95;
+
+}
+
+.gmail .icon{
+
+background:linear-gradient(135deg,#ff4b4b,#ff8c42);
+
+box-shadow:0 0 15px #ff5a5a;
+
+}
+
+.discord .icon{
+
+background:linear-gradient(135deg,#5865F2,#8b5cf6);
+
+box-shadow:0 0 15px #7c5cff;
+
+}
+
+.left h3{
+
+font-size:18px;
+
+margin-bottom:4px;
+
+}
+
+.left span{
+
+font-size:13px;
+
+color:#9fb5d4;
+
+}
+
+.support-btn{
+
+padding:12px 18px;
+
+border:none;
+
+border-radius:12px;
+
+font-size:13px;
+
+font-weight:700;
+
+cursor:pointer;
+
+color:#fff;
+
+background:linear-gradient(135deg,#00d9ff,#5a38ff);
+
+box-shadow:
+0 0 15px rgba(0,217,255,.35);
+
+transition:.3s;
+
+}
+
+.support-btn:hover{
+
+transform:scale(1.08);
+
+box-shadow:
+0 0 20px #00d9ff;
+
+}
+
+/* ===== Button Click Animation ===== */
+
+.support-btn:active{
+
+transform:scale(.95);
+
+}
+
+/* ===== Card Glow ===== */
+
+.whatsapp{
+
+border-left:4px solid #00ff95;
+
+}
+
+.gmail{
+
+border-left:4px solid #ff5a5a;
+
+}
+
+.discord{
+
+border-left:4px solid #7c5cff;
+
+}
+
+/* ===== Responsive ===== */
+
+/* Large Tablet */
+
+@media(max-width:1024px){
+
+.container{
+
+max-width:500px;
+
+}
+
+}
+
+/* Tablet */
 
 @media(max-width:768px){
-  .card{
-    padding:16px !important;
-  }
 
-  h1,h2{
-    font-size:22px !important;
-  }
+.header h1{
+
+font-size:24px;
+
 }
 
-html, body, * {
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
+.header p{
+
+font-size:14px;
+
 }
 
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 70px;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
+.support-card{
 
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
-  border-top: 1px solid rgba(255,255,255,0.2);
+padding:16px;
 
-  box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
-  z-index: 1000;
-}
-.nav-item {
-  text-align: center;
-  text-decoration: none;
-  color: #aaa;
-  font-size: 12px;
-  transition: 0.3s;
 }
 
-.nav-item i {
-  display: block;
-  font-size: 22px;
-  margin-bottom: 4px;
+.support-btn{
+
+padding:10px 16px;
+
+font-size:12px;
+
 }
 
-.nav-item:hover {
-  color: #00eaff;
 }
 
-.nav-item.active {
-  color: #00eaff;
+/* Mobile */
+
+@media(max-width:480px){
+
+body{
+
+padding:15px;
+
+padding-bottom:90px;
+
+}
+
+.container{
+
+max-width:100%;
+
+}
+
+.support-icon{
+
+width:75px;
+
+height:75px;
+
+font-size:35px;
+
+}
+
+.header h1{
+
+font-size:22px;
+
+}
+
+.header p{
+
+font-size:13px;
+
+line-height:20px;
+
+}
+
+.support-card{
+
+flex-direction:column;
+
+align-items:flex-start;
+
+gap:15px;
+
+}
+
+.left{
+
+width:100%;
+
+}
+
+.support-btn{
+
+width:100%;
+
+height:45px;
+
+font-size:14px;
+
+}
+
+.icon{
+
+width:55px;
+
+height:55px;
+
+font-size:24px;
+
+}
+
+}
+
+/* Small Mobile */
+
+@media(max-width:360px){
+
+.header h1{
+
+font-size:20px;
+
+}
+
+.support-btn{
+
+font-size:13px;
+
+}
+
+.left h3{
+
+font-size:16px;
+
+}
+
+.left span{
+
+font-size:12px;
+
+}
+
 }

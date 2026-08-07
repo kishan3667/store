@@ -10,8 +10,8 @@
   <link rel="icon" href="1.jpg">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="theme.css">
-<link rel="stylesheet" href="theme-st.css">
-<link rel="stylesheet" href="media-st.css">
+  <link rel="stylesheet" href="theme-st.css">
+  <link rel="stylesheet" href="media-st.css">
 
 </head>
 
@@ -19,132 +19,134 @@
 
 <div class="container">
 
-  <!-- Payment Details -->
+<div class="payment-header">
 
-  <div class="card">
-
-    <div class="title">
-        💳 Payment Details
-    </div>
-    
-
-<!-- HNB BANK -->
-<div class="payment-box">
-    <button class="copy-btn" onclick="copyPayment(this)">📋</button>
-
-    <div class="copy-content">
-        <h3>🏦 HNB BANK</h3>
-
-        <p><b>Account No:</b>
-            <span class="highlight">134020110640</span>
-        </p>
-
-        <p><b>Name:</b>
-            <span class="highlight">JOYTHAS K</span>
-        </p>
-
-        <p><b>Branch:</b>
-            <span class="highlight">THIRUKKOVIL</span>
-        </p>
-    </div>
+<div class="logo">
+💎
 </div>
 
+<h2>PHOENIX PAYMENT</h2>
 
-<!-- BOC BANK -->
-<div class="payment-box">
-    <button class="copy-btn" onclick="copyPayment(this)">📋</button>
+<p>Choose your payment method</p>
 
-    <div class="copy-content">
-        <h3>🏦 BOC BANK</h3>
-
-        <p><b>Account No:</b>
-            <span class="highlight">96644532</span>
-        </p>
-
-        <p><b>Name:</b>
-            <span class="highlight">JOYTHAS K</span>
-        </p>
-
-        <p><b>Branch:</b>
-            <span class="highlight">THIRUKKOVIL</span>
-        </p>
-    </div>
 </div>
 
+<!-- HNB -->
+
+<div class="payment-card hnb">
+
+<div class="card-header">
+
+<div class="bank">
+🏦 HNB BANK
+</div>
+
+<button class="copy-btn" onclick="copyPayment(this)">
+<i class="fas fa-copy"></i>
+</button>
+
+</div>
+
+<div class="copy-content">
+
+<div class="row">
+<span>Account No</span>
+<b>134020110640</b>
+</div>
+
+<div class="row">
+<span>Name</span>
+<b>JOYTHAS K</b>
+</div>
+
+<div class="row">
+<span>Branch</span>
+<b>THIRUKKOVIL</b>
+</div>
+
+</div>
+
+</div>
+
+<!-- BOC -->
+
+<div class="payment-card boc">
+
+<div class="card-header">
+
+<div class="bank">
+🏦 BOC BANK
+</div>
+
+<button class="copy-btn" onclick="copyPayment(this)">
+<i class="fas fa-copy"></i>
+</button>
+
+</div>
+
+<div class="copy-content">
+
+<div class="row">
+<span>Account No</span>
+<b>96644532</b>
+</div>
+
+<div class="row">
+<span>Name</span>
+<b>JOYTHAS K</b>
+</div>
+
+<div class="row">
+<span>Branch</span>
+<b>THIRUKKOVIL</b>
+</div>
+
+</div>
+
+</div>
 
 <!-- eZ Cash -->
-<div class="payment-box">
-    <button class="copy-btn" onclick="copyPayment(this)">📋</button>
 
-    <div class="copy-content">
-        <h3>📱 eZ Cash</h3>
+<div class="payment-card ezcash">
 
-        <p><b>Number:</b>
-            <span class="highlight">0771945590</span>
-        </p>
+<div class="card-header">
 
-        <p><b>Name:</b>
-            <span class="highlight">JOYTHAS K</span>
-        </p>
-    </div>
+<div class="bank">
+📱 eZ Cash
+</div>
 
-    <div class="note-box">
-        ⚠️ Note: eZ Cash payment pannum pothu
-        <b>Rs.20 extra</b> pay pannunga
-    </div>
+<button class="copy-btn" onclick="copyPayment(this)">
+<i class="fas fa-copy"></i>
+</button>
+
+</div>
+
+<div class="copy-content">
+
+<div class="row">
+<span>Number</span>
+<b>0771945590</b>
+</div>
+
+<div class="row">
+<span>Name</span>
+<b>JOYTHAS K</b>
+</div>
+
+</div>
+
+<div class="note">
+
+⚠️ eZ Cash payment pannum pothu
+<b>Rs.20 extra</b> service charge pay pannunga.
+
 </div>
 
 </div>
 
 </div>
 
-</div>
-
-<script type="module">
-
-import { createClient } from
-"https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
-
-const supabase = createClient(
-  "https://tvhgxlqqeklrdlgbkosa.supabase.co",
-  "sb_publishable_Ep28HPF1SXIXQXBF2i__eg_h_jmjw4I"
-);
-
-// Maintenance Check
-const { data } = await supabase
-  .from("settings")
-  .select("maintenance")
-  .eq("id", 1)
-  .single();
-
-if (
-  data?.maintenance === true &&
-  !window.location.pathname.endsWith("maintenance.html")
-) {
-  window.location.href = "maintenance.html";
-}
-
-// Copy Payment
-window.copyPayment = function(button) {
-
-  const box = button.closest(".payment-box");
-  const content = box.querySelector(".copy-content");
-
-  navigator.clipboard.writeText(content.innerText).then(() => {
-
-    const old = button.innerText;
-
-    button.innerText = "✅";
-
-    setTimeout(() => {
-      button.innerText = old;
-    }, 1500);
-
-  });
-
-};
-
-</script>
+<!-- Bottom Navigation -->
 
 <div class="bottom-nav">
 
@@ -175,7 +177,9 @@ window.copyPayment = function(button) {
 
 </div>
 
-<script src="theme.js"></script>
-</body>
+<script type="module" src="payment.js"></script>
 
+<script src="theme.js"></script>
+
+</body>
 </html>

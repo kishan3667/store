@@ -62,7 +62,9 @@
                             </svg>
                         </div>
                     </div>
-                    <span class="error-message" id="passwordError"></span>
+                    <span id="passwordError" style="color:red;display:none;">
+Invalid email or password
+</span>
                 </div>
 
                 <div class="form-options">
@@ -158,19 +160,28 @@ window.location.replace("home.html");
 
 /* LOGIN */
 
+const loginBtn =
+document.querySelector(".login-btn");
+
 document
 .getElementById("loginForm")
 .addEventListener("submit", async(e)=>{
 
 e.preventDefault();
 
+loginBtn.disabled = true;
+loginBtn.querySelector(".btn-text").innerText = "Wait...";
 
 const email =
 document.getElementById("email").value.trim();
 
-
 const password =
 document.getElementById("password").value.trim();
+
+const passwordError =
+document.getElementById("passwordError");
+
+passwordError.style.display = "none";
 
 
 
@@ -187,7 +198,10 @@ password: password
 
 if(error){
 
-alert("Invalid email or password");
+loginBtn.disabled = false;
+loginBtn.querySelector(".btn-text").innerText = "Sign In";
+
+passwordError.style.display = "block";
 
 return;
 
@@ -199,6 +213,8 @@ localStorage.setItem(
 "userId",
 data.user.id
 );
+
+passwordError.style.display = "none";
 
 window.location.replace("home.html");
 

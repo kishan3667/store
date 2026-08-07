@@ -60,7 +60,13 @@ receipt.addEventListener("change", () => {
 });
 
 // Submit
-document.getElementById("submitBtn").onclick = async () => {
+
+const submitBtn = document.getElementById("submitBtn");
+
+submitBtn.onclick = async () => {
+
+  submitBtn.disabled = true;
+  submitBtn.innerText = "Wait...";
 
   const amount =
     document.getElementById("amount").value.trim();
@@ -74,13 +80,16 @@ document.getElementById("submitBtn").onclick = async () => {
   const msg =
     document.getElementById("msg");
 
-  if (!amount || !whatsapp || !file) {
+if (!amount || !whatsapp || !file) {
 
-    msg.innerText = "Fill all fields ⚠️";
+  msg.innerText = "Fill all fields ⚠️";
 
-    return;
+  submitBtn.disabled = false;
+  submitBtn.innerText = "Submit Wallet Top Up";
 
-  }
+  return;
+
+}
 
   msg.innerText = "Uploading...";
 
@@ -92,13 +101,16 @@ document.getElementById("submitBtn").onclick = async () => {
       .from("uploads")
       .upload(fileName, file);
 
-  if (uploadError) {
+if (uploadError) {
 
-    msg.innerText = "Upload Failed ❌";
+  msg.innerText = "Upload Failed ❌";
 
-    return;
+  submitBtn.disabled = false;
+  submitBtn.innerText = "Submit Wallet Top Up";
 
-  }
+  return;
+
+}
 
   const { data: urlData } =
     supabase.storage
@@ -128,13 +140,16 @@ document.getElementById("submitBtn").onclick = async () => {
 
       });
 
-  if (error) {
+if (error) {
 
-    msg.innerText = error.message;
+  msg.innerText = error.message;
 
-    return;
+  submitBtn.disabled = false;
+  submitBtn.innerText = "Submit Wallet Top Up";
 
-  }
+  return;
+
+}
 
   // Discord
   const form = new FormData();
@@ -162,5 +177,13 @@ ${receipt_url}`
   );
 
   msg.innerText = "Wallet Request Submitted ✅";
+
+  submitBtn.innerText = "Submitted ✅";
+
+localStorage.setItem("openWalletHistory", "true");
+
+setTimeout(() => {
+    window.location.href = "history.html";
+}, 1000);
 
 };

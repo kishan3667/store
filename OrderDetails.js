@@ -81,6 +81,36 @@ product.title;
 document.getElementById("productPrice").textContent =
 "Rs. " + product.price.toFixed(2);
 
+// Quantity
+let quantity = 1;
+
+const minusBtn = document.getElementById("minusBtn");
+const plusBtn = document.getElementById("plusBtn");
+const quantityText = document.getElementById("quantity");
+const totalPrice = document.getElementById("totalPrice");
+
+function updateTotal() {
+    quantityText.textContent = quantity;
+    totalPrice.textContent =
+        "Rs. " + (product.price * quantity).toFixed(2);
+}
+
+updateTotal();
+
+plusBtn.addEventListener("click", () => {
+    if (quantity < 5) {
+        quantity++;
+        updateTotal();
+    }
+});
+
+minusBtn.addEventListener("click", () => {
+    if (quantity > 1) {
+        quantity--;
+        updateTotal();
+    }
+});
+
 // ----------------------------
 // Submit Button
 // ----------------------------
@@ -117,15 +147,17 @@ async () => {
 
     // Wallet Check
 
-    if (walletBalance < product.price) {
+const totalAmount = product.price * quantity;
 
-        msg.style.color = "red";
-        msg.textContent =
-        "❌ Wallet balance is not enough.";
+if (walletBalance < totalAmount) {
 
-        return;
+    msg.style.color = "red";
+    msg.textContent =
+    "❌ Wallet balance is not enough.";
 
-    }
+    return;
+
+}
 
     msg.style.color =
     "limegreen";
@@ -136,7 +168,7 @@ async () => {
     // Update Wallet
 
 const newBalance =
-walletBalance - product.price;
+walletBalance - totalAmount;
 
 const { error: walletError } =
 await supabase
@@ -175,11 +207,17 @@ await supabase
     category:
     product.category,
 
-    price:
-    product.price,
+price:
+product.price,
 
-    status:
-    "Pending"
+quantity:
+quantity,
+
+total_price:
+totalAmount,
+
+status:
+"Pending"
 
 });
 

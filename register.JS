@@ -32,9 +32,15 @@ document.getElementById("otpPopup");
 const verifyBtn =
 document.getElementById("verifyOtpBtn");
 
+const createBtn =
+document.querySelector("#registerForm button[type='submit']");
+
 form.addEventListener("submit", async(e)=>{
 
 e.preventDefault();
+
+createBtn.disabled = true;
+createBtn.innerText = "Verifying Account...";
 
 const email =
 document.getElementById("email").value.trim();
@@ -92,6 +98,9 @@ popup.style.display="flex";
 
 startOtpTimer();
 
+createBtn.disabled = false;
+createBtn.innerText = "Create Account";
+
 }
 
 else{
@@ -101,6 +110,9 @@ alert(result.error);
 }
 
 } catch(error) {
+
+createBtn.disabled = false;
+createBtn.innerText = "Create Account";
 
 alert(error.message);
 
@@ -156,6 +168,9 @@ resendBtn.disabled = false;
 
 verifyBtn.addEventListener("click",async()=>{
 
+verifyBtn.disabled = true;
+verifyBtn.innerText = "Wait...";
+
 const email =
 document.getElementById("email").value.trim();
 
@@ -165,6 +180,10 @@ document.getElementById("otpInput").value.trim();
 if(otp.length !== 6){
 
 alert("Enter 6 digit OTP");
+
+verifyBtn.disabled = false;
+verifyBtn.innerText = "Verify OTP";
+
 return;
 
 }
@@ -238,6 +257,9 @@ window.location.href="index.html";
 else{
 
 alert("Wrong OTP");
+
+verifyBtn.disabled = false;
+verifyBtn.innerText = "Verify OTP";
 
 }
 

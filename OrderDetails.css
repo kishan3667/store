@@ -13,9 +13,9 @@ padding-bottom:90px;
 }
 
 .order-container{
-width:95%;
-max-width:430px;
-margin:25px auto;
+    width:95%;
+    max-width:430px;
+    margin:90px auto 25px;
 }
 
 .order-card{
@@ -169,4 +169,98 @@ height:50px;
 font-size:16px;
 }
 
+}
+
+.header{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--header);
+}
+
+/* =========================
+   Quantity Box
+========================= */
+
+.quantity-box{
+    margin-top:20px;
+}
+
+.quantity-box label{
+    display:block;
+    color:#fff;
+    font-size:18px;
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+.qty-controls{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+}
+
+.qty-controls button{
+    width:45px;
+    height:45px;
+    border:2px solid #00e5ff;
+    border-radius:12px;
+    background:#16263a;
+    color:#00e5ff;
+    font-size:24px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+    box-shadow:0 0 10px rgba(0,229,255,.35);
+}
+
+.qty-controls button:hover{
+    background:#00e5ff;
+    color:#111;
+    transform:scale(1.08);
+}
+
+#quantity{
+    width:60px;
+    height:45px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border:2px solid #00e5ff;
+    border-radius:12px;
+    background:#101c2c;
+    color:#fff;
+    font-size:22px;
+    font-weight:bold;
+    box-shadow:0 0 10px rgba(0,229,255,.35);
+}
+
+/* =========================
+   Total Price Box
+========================= */
+
+.total-box{
+    margin-top:20px;
+    margin-bottom:20px;
+    padding:15px 18px;
+    border:2px solid #00e5ff;
+    border-radius:15px;
+    background:#16263a;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 0 12px rgba(0,229,255,.25);
+}
+
+.total-box span{
+    color:#fff;
+    font-size:17px;
+    font-weight:600;
+}
+
+#totalPrice{
+    color:#00e5ff;
+    font-size:22px;
+    font-weight:bold;
 }

@@ -449,7 +449,7 @@ return;
 // Finish animation
 finishPhotoLoader();
 
-showToast("Profile Photo Updated");
+// showToast("Profile Photo Updated");
 
 }
 catch(err){
@@ -534,6 +534,3 @@ console.log(
 
 document.getElementById("avatarBtn")
 .addEventListener("click", changePhoto);
-
-document.getElementById("logoutBtn")
-.addEventListener("click", logout);
